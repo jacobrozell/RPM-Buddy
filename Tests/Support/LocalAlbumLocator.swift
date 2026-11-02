@@ -9,7 +9,7 @@ enum LocalAlbumLocator {
         let fileManager = FileManager.default
         for _ in 0..<8 {
             if fileManager.fileExists(atPath: url.appendingPathComponent("project.yml").path)
-                || fileManager.fileExists(atPath: url.appendingPathComponent("BeatMic.xcodeproj").path) {
+                || fileManager.fileExists(atPath: url.appendingPathComponent("RPMBuddy.xcodeproj").path) {
                 return url
             }
             url.deleteLastPathComponent()
@@ -21,7 +21,7 @@ enum LocalAlbumLocator {
     }
 
     static func directory(named albumName: String) -> URL? {
-        if let configured = ProcessInfo.processInfo.environment["BEATMIC_LOCAL_AUDIO_DIR"] {
+        if let configured = ProcessInfo.processInfo.environment["RPMBUDDY_LOCAL_AUDIO_DIR"] {
             let url = URL(fileURLWithPath: configured, isDirectory: true)
             if FileManager.default.fileExists(atPath: url.path) {
                 return url

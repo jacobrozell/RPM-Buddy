@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct BeatMicApp: App {
+struct RPMBuddyApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()

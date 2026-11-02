@@ -1,4 +1,4 @@
-# Specs index — BeatMic
+# Specs index — RPM Buddy
 
 | Spec | Status |
 |------|--------|

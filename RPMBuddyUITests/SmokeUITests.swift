@@ -1,6 +1,6 @@
 import XCTest
 
-class BeatMicUITestCase: XCTestCase {
+class RPMBuddyUITestCase: XCTestCase {
     let timeout: TimeInterval = 12
 
     override func setUp() {
@@ -25,10 +25,10 @@ class BeatMicUITestCase: XCTestCase {
     }
 }
 
-final class SmokeUITests: BeatMicUITestCase {
+final class SmokeUITests: RPMBuddyUITestCase {
     func testDetectorShowsMockBPM() {
         let app = launchApp()
-        XCTAssertTrue(app.staticTexts["BeatMic"].waitForExistence(timeout: timeout))
+        XCTAssertTrue(app.staticTexts["RPM Buddy"].waitForExistence(timeout: timeout))
 
         let listen = app.buttons["detector.listen.toggle"]
         XCTAssertTrue(listen.waitForExistence(timeout: timeout))

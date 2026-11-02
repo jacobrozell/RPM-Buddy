@@ -1,4 +1,4 @@
-# Architecture spec — BeatMic
+# Architecture spec — RPM Buddy
 
 ## Layers
 

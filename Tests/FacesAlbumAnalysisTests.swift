@@ -1,6 +1,6 @@
 import Foundation
 import Testing
-@testable import BeatMic
+@testable import RPMBuddy
 
 /// Dev-only regression tests for Mac Miller — Faces on disk.
 /// Skips silently in CI when the gitignored album folder is absent.

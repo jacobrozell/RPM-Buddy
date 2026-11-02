@@ -15,7 +15,7 @@ struct MicPermissionView: View {
             Text(String(
                 localized: "onboarding.body",
                 defaultValue: """
-                BeatMic listens through the microphone to estimate nearby tempo. Audio stays on device.
+                RPM Buddy listens through the microphone to estimate nearby tempo. Audio stays on device.
                 """
             ))
                 .multilineTextAlignment(.center)
@@ -32,7 +32,7 @@ struct MicPermissionView: View {
             if model.permission == .denied {
                 Text(String(
                     localized: "onboarding.denied",
-                    defaultValue: "Microphone access was denied. Enable it in Settings → BeatMic."
+                    defaultValue: "Microphone access was denied. Enable it in Settings → RPM Buddy."
                 ))
                     .font(.footnote)
                     .foregroundStyle(.secondary)

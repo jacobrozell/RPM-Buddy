@@ -3,7 +3,7 @@
 **Last updated:** 2026-06-21  
 **Status:** Non-authoritative brainstorm → promote to `specs/` when approach is chosen.
 
-**Problem:** BeatMic only locks tempo when the source is **very loud** (speaker cranked, phone close). Normal room listening (laptop, vinyl across the room, Mac Miller album at moderate volume) often shows no BPM or low confidence.
+**Problem:** RPM Buddy only locks tempo when the source is **very loud** (speaker cranked, phone close). Normal room listening (laptop, vinyl across the room, Mac Miller album at moderate volume) often shows no BPM or low confidence.
 
 ---
 

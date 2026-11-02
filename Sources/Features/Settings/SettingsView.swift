@@ -27,7 +27,7 @@ struct SettingsView: View {
                     Text(String(
                         localized: "settings.disclaimer",
                         defaultValue: """
-                        BeatMic provides tempo estimates, not metronome-grade measurements. \
+                        RPM Buddy provides tempo estimates, not metronome-grade measurements. \
                         Confidence reflects analysis quality, not musical correctness.
                         """
                     ))

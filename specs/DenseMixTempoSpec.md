@@ -1,6 +1,6 @@
-# Dense mix tempo detection — BeatMic
+# Dense mix tempo detection — RPM Buddy
 
-**Status:** Shipped (v1.1 analyzer, 2026-06-22)  
+**Status:** Superseded 2026-11-01 by the librosa-style analyzer described in [BPMDetectorSpec](BPMDetectorSpec.md#analyzer)  
 **Last updated:** 2026-06-22  
 **Supersedes:** `docs/brainstorm-sensitivity.md` Option D (promoted)  
 **Related:** [BPMDetectorSpec](BPMDetectorSpec.md), [ArchitectureSpec](ArchitectureSpec.md), `Tests/FacesAlbumAnalysisTests.swift`, `Tests/ILTYAlbumAnalysisTests.swift`
@@ -285,4 +285,4 @@ Confirm Insomniak and New Faces lines show pass in report.
 
 - Failure analysis: conversation 2026-06-22 (Insomniak 80 = 120 × ⅔; New Faces peak cluster)  
 - Baseline tests: `Tests/FacesAlbumAnalysisTests.swift`, `Tests/Support/FacesAlbumCatalog.swift`  
-- Prior art: MixStack `AudioAnalyzer.estimateBPM` (same family; BeatMic v1.1 diverges with multi-band + comb)
+- Prior art: MixStack `AudioAnalyzer.estimateBPM` (same family; RPM Buddy v1.1 diverges with multi-band + comb)

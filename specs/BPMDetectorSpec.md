@@ -1,4 +1,4 @@
-# BPM detector spec — BeatMic
+# BPM detector spec — RPM Buddy
 
 ## User-visible behavior
 
@@ -14,10 +14,14 @@
 
 ## Confidence semantics
 
-- Derived from autocorrelation peak strength, peak-vs-runner-up ratio, and signal level.
+- Derived from how periodic the onset envelope is at the chosen beat (normalized autocorrelation). Pure room noise scores near 0; clear grooves reach 100%.
 - **Low** (< 15%): do not show a BPM number.
 - Meter tint: orange / yellow / green by band (non-color labels still describe level).
 - VoiceOver reads confidence as a percentage.
+
+## Analyzer
+
+Follows librosa's `beat.tempo` (ISC): log-compressed mel spectral flux, 8 s autocorrelation windows averaged over time, a log-normal prior centered on 120 BPM, and a comb over the first four multiples of each candidate period. Pure Swift + Accelerate, no third-party code.
 
 ## Analysis limits
 
@@ -35,5 +39,5 @@
 |-------|-------|
 | Target release | 1.0 |
 | Last verified | 2026-06-21 |
-| Tests | `Tests/BPMAnalyzerTests.swift`, `BeatMicUITests/SmokeUITests.swift` |
+| Tests | `Tests/BPMAnalyzerTests.swift`, `RPMBuddyUITests/SmokeUITests.swift` |
 | Primary paths | `Sources/Features/Detector/*`, `Sources/Domain/BPMAnalyzer.swift` |

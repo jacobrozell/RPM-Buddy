@@ -2,22 +2,22 @@
 
 ## Tempo engine → Swift Package (post–TestFlight)
 
-After BeatMic TestFlight validates the detector on real devices, extract the analysis core into a **local SPM package** (working name: **TempoKit** or **BeatMicEngine**). BeatMic stays the live-listening app; other apps (starting with **MixStack**) depend on the package for file-based BPM.
+After RPM Buddy TestFlight validates the detector on real devices, extract the analysis core into a **local SPM package** (working name: **TempoKit** or **RPMBuddyEngine**). RPM Buddy stays the live-listening app; other apps (starting with **MixStack**) depend on the package for file-based BPM.
 
-| In the package | Stays in BeatMic app |
+| In the package | Stays in RPM Buddy app |
 |----------------|----------------------|
 | `BPMAnalyzer`, `BPMEstimate`, dense-mix pipeline | `LiveAudioCapture`, mic permission, detector UI |
 | `AudioLevelNormalizer` | Confidence meter, tempo-alternative chips, settings |
 | `TempoInterpretations` (math only — no localized labels) | Onboarding, legal links, metronome self-test UI |
 | `AudioFileLoader` / file estimator | — |
 
-**Sequencing:** TestFlight + device QA → refactor/split `BPMAnalyzer` → SPM target → BeatMic depends on package → MixStack adopts for import BPM → open-source the package (MIT, metronome fixture tests, accuracy disclaimer).
+**Sequencing:** TestFlight + device QA → refactor/split `BPMAnalyzer` → SPM target → RPM Buddy depends on package → MixStack adopts for import BPM → open-source the package (MIT, metronome fixture tests, accuracy disclaimer).
 
 **Consumer:** [`MixStack`](../../MixStack/FutureIdeas/backlog.md) replaces `AudioAnalyzer.estimateBPM` with the shared estimator; key + vocal detection remain in MixStack.
 
 ---
 
-## Product (BeatMic app)
+## Product (RPM Buddy app)
 
 - Session history (last N readings with timestamp)
 - Tap tempo mode when mic analysis fails

@@ -1,5 +1,5 @@
 import Testing
-@testable import BeatMic
+@testable import RPMBuddy
 
 @Suite("BPM Analyzer")
 struct BPMAnalyzerTests {
@@ -42,6 +42,17 @@ struct BPMAnalyzerTests {
         let result = BPMAnalyzer.estimate(samples: silence, sampleRate: sampleRate)
         #expect(result.bpm == nil)
         #expect(result.confidence == 0)
+    }
+
+    @Test("White noise yields no BPM")
+    func noiseHasNoBPM() {
+        var state: UInt64 = 7
+        let noise = (0..<Int(12 * sampleRate)).map { _ -> Float in
+            state = state &* 6_364_136_223_846_793_005 &+ 1_442_695_040_888_963_407
+            return Float(state >> 40) / Float(1 << 24) - 0.5
+        }
+        let result = BPMAnalyzer.estimate(samples: noise, sampleRate: sampleRate)
+        #expect(result.bpm == nil)
     }
 
     @Test("Decimation preserves enough samples for analysis")

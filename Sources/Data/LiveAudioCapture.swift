@@ -4,7 +4,7 @@ import Foundation
 /// Captures microphone PCM into a rolling buffer for periodic tempo analysis.
 final class LiveAudioCapture: @unchecked Sendable {
     private let engine = AVAudioEngine()
-    private let queue = DispatchQueue(label: "com.jacobrozell.beatmic.capture")
+    private let queue = DispatchQueue(label: "com.jacobrozell.rpmbuddy.capture")
     private var ringBuffer: [Float] = []
     private var writeIndex = 0
     private var filledCount = 0
@@ -67,14 +67,16 @@ final class LiveAudioCapture: @unchecked Sendable {
         guard frameLength > 0 else { return }
 
         let channels = Int(buffer.format.channelCount)
+        let mono = (0..<frameLength).map { frame -> Float in
+            var sample: Float = 0
+            for channel in 0..<channels {
+                sample += channelData[channel][frame]
+            }
+            return sample / Float(channels)
+        }
         queue.async {
             var blockSum: Float = 0
-            for frame in 0..<frameLength {
-                var sample: Float = 0
-                for channel in 0..<channels {
-                    sample += channelData[channel][frame]
-                }
-                if channels > 1 { sample /= Float(channels) }
+            for sample in mono {
                 self.ringBuffer[self.writeIndex] = sample
                 self.writeIndex = (self.writeIndex + 1) % self.capacity
                 self.filledCount = min(self.capacity, self.filledCount + 1)

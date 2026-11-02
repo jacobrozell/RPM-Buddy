@@ -13,7 +13,7 @@ python3 Scripts/generate_metronome_fixture.py
 
 echo "::group::Download BigSoundBank CC0 mechanical metronome (~120 BPM)"
 mkdir -p "${FIXTURES}"
-curl -fsSL -A "BeatMic-fixture-sync/1.0" "${BSB_MP3_URL}" -o "${BSB_MP3}"
+curl -fsSL -A "RPMBuddy-fixture-sync/1.0" "${BSB_MP3_URL}" -o "${BSB_MP3}"
 afconvert -f WAVE -d LEI16 "${BSB_MP3}" "${BSB_FILE}"
 rm -f "${BSB_MP3}"
 echo "Downloaded and converted ${BSB_FILE} ($(du -h "${BSB_FILE}" | cut -f1))"

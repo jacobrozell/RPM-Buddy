@@ -1,5 +1,5 @@
 import Testing
-@testable import BeatMic
+@testable import RPMBuddy
 
 @Suite("Audio level normalization")
 struct AudioLevelNormalizerTests {

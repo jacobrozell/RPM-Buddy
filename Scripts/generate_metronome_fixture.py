@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate metronome click WAV fixtures for BeatMic QA and unit tests.
+"""Generate metronome click WAV fixtures for RPMBuddy QA and unit tests.
 
 Synthesized sine clicks (similar to web metronome generators). Project-authored; treat as CC0.
 """
@@ -51,7 +51,7 @@ def write_metronome(path: Path, bpm: int, seconds: int) -> None:
 
 def write_manifest(fixtures: list[dict]) -> None:
     manifest = {
-        "description": "BeatMic metronome fixtures for analyzer verification",
+        "description": "RPMBuddy metronome fixtures for analyzer verification",
         "fixtures": fixtures,
     }
     (OUT_DIR / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")

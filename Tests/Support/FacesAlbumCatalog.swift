@@ -1,5 +1,5 @@
 import Foundation
-@testable import BeatMic
+@testable import RPMBuddy
 
 enum FacesAlbumCatalog {
     static let albumName = "Mac Miller - Faces"

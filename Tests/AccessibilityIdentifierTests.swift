@@ -1,5 +1,5 @@
 import Testing
-@testable import BeatMic
+@testable import RPMBuddy
 
 @Suite("Accessibility identifiers")
 struct AccessibilityIdentifierTests {

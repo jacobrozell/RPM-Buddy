@@ -1,6 +1,6 @@
 # Metronome test fixtures
 
-Labeled WAV files for BeatMic analyzer verification and manual QA.
+Labeled WAV files for RPM Buddy analyzer verification and manual QA.
 
 ## Refresh fixtures
 
@@ -17,7 +17,7 @@ See `manifest.json` for expected BPM per file.
 
 ## Manual app check (device or Mac speaker)
 
-1. Build and run BeatMic on a device (or simulator with audio routed to mic).
+1. Build and run RPM Buddy on a device (or simulator with audio routed to mic).
 2. Open **Settings → Verification → Run 120 BPM metronome test** (analyzes bundled file directly).
 3. Or play `metronome-120bpm-30s.wav` on a speaker near the phone and tap **Listen**.
 

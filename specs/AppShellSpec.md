@@ -1,4 +1,4 @@
-# App shell spec — BeatMic
+# App shell spec — RPM Buddy
 
 ## Navigation
 

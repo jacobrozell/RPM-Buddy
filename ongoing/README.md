@@ -1,4 +1,4 @@
-# Ongoing work — BeatMic
+# Ongoing work — RPM Buddy
 
 ## Active
 
@@ -9,6 +9,7 @@
 | Polish backlog | [`polish-backlog.md`](polish-backlog.md) | Prioritized UX, ship, visual, trust items |
 | Sensitivity / quiet listening | 🟡 | [`docs/brainstorm-sensitivity.md`](../docs/brainstorm-sensitivity.md) — adaptive normalize shipped; dense mix spec drafted |
 | Dense mix tempo (Insomniak / Faces) | 📋 | [`specs/DenseMixTempoSpec.md`](../specs/DenseMixTempoSpec.md) — multi-band flux + BPM comb scoring |
+| First TestFlight and a device listen | [`docs/agent-build-checklist.md`](../docs/agent-build-checklist.md) | Not started. Phases 7–16. Upload a build, then one on-device listen against live music. Icon and legal URLs are still open. |
 
 ## Finished
 

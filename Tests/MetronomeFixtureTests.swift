@@ -1,6 +1,6 @@
 import Foundation
 import Testing
-@testable import BeatMic
+@testable import RPMBuddy
 
 @Suite("Metronome fixtures", .serialized)
 struct MetronomeFixtureTests {

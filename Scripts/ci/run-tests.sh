@@ -4,8 +4,8 @@ set -euo pipefail
 SIM_DESTINATION="${1:-platform=iOS Simulator,name=iPhone 17}"
 
 xcodebuild test \
-  -project BeatMic.xcodeproj \
-  -scheme BeatMicCI \
+  -project RPMBuddy.xcodeproj \
+  -scheme RPMBuddyCI \
   -destination "${SIM_DESTINATION}" \
   -resultBundlePath TestResults.xcresult \
   -derivedDataPath DerivedData \

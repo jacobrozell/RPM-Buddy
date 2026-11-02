@@ -1,9 +1,9 @@
-# SwiftLint configuration for BeatMic.
+# SwiftLint configuration for RPMBuddy.
 
 included:
   - Sources
   - Tests
-  - BeatMicUITests
+  - RPMBuddyUITests
 
 excluded:
   - .build

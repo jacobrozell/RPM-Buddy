@@ -12,14 +12,14 @@ fi
 xcodegen generate
 swiftlint --strict
 
-echo "Running BeatMicCI on iPhone 17 simulator…"
+echo "Running RPMBuddyCI on iPhone 17 simulator…"
 xcodebuild test \
-  -project BeatMic.xcodeproj \
-  -scheme BeatMicCI \
+  -project RPMBuddy.xcodeproj \
+  -scheme RPMBuddyCI \
   -destination 'platform=iOS Simulator,name=iPhone 17' \
   -derivedDataPath DerivedData \
   CODE_SIGN_IDENTITY=- \
   CODE_SIGNING_REQUIRED=NO \
   CODE_SIGNING_ALLOWED=NO
 
-echo "✅ BeatMic verification passed."
+echo "✅ RPMBuddy verification passed."

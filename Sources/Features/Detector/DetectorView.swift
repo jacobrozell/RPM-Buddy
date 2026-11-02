@@ -25,7 +25,7 @@ struct DetectorView: View {
                 }
                 .padding(24)
             }
-            .navigationTitle("BeatMic")
+            .navigationTitle("RPM Buddy")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -50,7 +50,7 @@ struct DetectorView: View {
             Text(String(
                 localized: "detector.instructions",
                 defaultValue: """
-                Point your phone at a speaker or record. BeatMic estimates beats per minute from the mic.
+                Point your phone at a speaker or record. RPM Buddy estimates beats per minute from the mic.
                 """
             ))
                 .font(.body)

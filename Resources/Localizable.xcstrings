@@ -7,7 +7,7 @@
     "%lld%%" : {
 
     },
-    "BeatMic" : {
+    "RPM Buddy" : {
 
     },
     "confidence.caption" : {
@@ -93,7 +93,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Point your phone at a speaker or record. BeatMic estimates beats per minute from the mic."
+            "value" : "Point your phone at a speaker or record. RPM Buddy estimates beats per minute from the mic."
           }
         }
       }
@@ -247,7 +247,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "BeatMic listens through the microphone to estimate nearby tempo. Audio stays on device."
+            "value" : "RPM Buddy listens through the microphone to estimate nearby tempo. Audio stays on device."
           }
         }
       }
@@ -258,7 +258,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Microphone access was denied. Enable it in Settings → BeatMic."
+            "value" : "Microphone access was denied. Enable it in Settings → RPM Buddy."
           }
         }
       }
@@ -302,7 +302,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "BeatMic provides tempo estimates, not metronome-grade measurements. Confidence reflects analysis quality, not musical correctness."
+            "value" : "RPM Buddy provides tempo estimates, not metronome-grade measurements. Confidence reflects analysis quality, not musical correctness."
           }
         }
       }

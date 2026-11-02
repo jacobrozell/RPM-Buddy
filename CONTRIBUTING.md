@@ -10,7 +10,7 @@ See [`README.md`](README.md) for setup. Run `xcodegen generate` after editing `p
 - `Sources/DesignSystem/` — shared UI components
 - `Sources/Support/` — launch configuration, links, accessibility IDs
 - `Tests/` — Swift Testing unit tests
-- `BeatMicUITests/` — UI smoke tests (mock BPM launch args)
+- `RPMBuddyUITests/` — UI smoke tests (mock BPM launch args)
 
 ## Style
 

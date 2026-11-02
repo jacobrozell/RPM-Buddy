@@ -1,6 +1,6 @@
 import Foundation
 import Testing
-@testable import BeatMic
+@testable import RPMBuddy
 
 @Suite("I Love Life Thank You album analysis (local only)", .serialized)
 struct ILTYAlbumAnalysisTests {

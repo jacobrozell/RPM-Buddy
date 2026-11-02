@@ -1,4 +1,4 @@
-# Brainstorm — BeatMic
+# Brainstorm — RPM Buddy
 
 **Non-authoritative** notes from the initial idea. See `specs/` for behavior contracts.
 
@@ -32,8 +32,8 @@ Simple microphone app: hold the phone up to a record or speaker, analyze ambient
 
 | Decision | Choice |
 |----------|--------|
-| App name | BeatMic |
-| Bundle ID | com.jacobrozell.beatmic |
+| App name | RPM Buddy |
+| Bundle ID | com.jacobrozell.rpmbuddy |
 | Min iOS | 18.0 |
 | Telemetry | Off |
 | Orientation | Portrait only |

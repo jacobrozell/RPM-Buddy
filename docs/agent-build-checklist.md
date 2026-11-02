@@ -1,8 +1,8 @@
-# Agent Build Checklist — BeatMic
+# Agent Build Checklist — RPM Buddy
 
-Living status against the [generic template](../../workspace/agent-build-checklist-template.md).
+Living status against the [generic template](../../../workspace/agent-build-checklist-template.md).
 
-**App idea:** Hold your phone up to a record or speaker; BeatMic listens through the microphone, estimates BPM, and shows analysis confidence transparently.
+**App idea:** Hold your phone up to a record or speaker; RPM Buddy listens through the microphone, estimates BPM, and shows analysis confidence transparently.
 
 Legend: ✅ done · 🟡 partial · ⛔ not started
 

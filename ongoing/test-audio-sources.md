@@ -2,7 +2,7 @@
 
 **Last updated:** 2026-06-21
 
-Curated sources for BeatMic manual QA, device testing, and optional bundled fixtures. **Do not commit large downloads to git** — add selected clips under `Resources/Fixtures/` (gitignored or small WAV only) with a `README` citing license + expected BPM.
+Curated sources for RPM Buddy manual QA, device testing, and optional bundled fixtures. **Do not commit large downloads to git** — add selected clips under `Resources/Fixtures/` (gitignored or small WAV only) with a `README` citing license + expected BPM.
 
 ---
 
@@ -21,7 +21,7 @@ Best for first device pass and optional unit/integration fixtures.
 | **90** | Deoxys Beats — *Friend A* | MP3 + WAV | CC BY-SA 3.0 | [free-stock-music.com/deoxys-beats-friend-a.html](https://www.free-stock-music.com/deoxys-beats-friend-a.html) |
 | **128** | FSM Team — *Urban Commuters* | MP3 + WAV | CC BY 4.0 | [free-stock-music.com/fsm-team-escp-urban-commuters.html](https://www.free-stock-music.com/fsm-team-escp-urban-commuters.html) |
 
-**Half-time / double-time check:** At **120** primary, BeatMic should offer **60** and **240** alternatives. Play the 120 BPM metronome and confirm primary ≈120 (not 60).
+**Half-time / double-time check:** At **120** primary, RPM Buddy should offer **60** and **240** alternatives. Play the 120 BPM metronome and confirm primary ≈120 (not 60).
 
 ---
 
@@ -84,7 +84,7 @@ Filename pattern includes `bpm###` — ideal for scripted accuracy reports.
 
 ---
 
-## Suggested BeatMic test matrix
+## Suggested RPM Buddy test matrix
 
 | Scenario | Source | Pass criteria |
 |----------|--------|---------------|

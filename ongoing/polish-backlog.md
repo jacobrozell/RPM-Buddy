@@ -1,4 +1,4 @@
-# Polish backlog — BeatMic
+# Polish backlog — RPM Buddy
 
 **Last updated:** 2026-06-21
 
@@ -11,7 +11,7 @@ Prioritized polish from MVP review. Legend: **ship** = TestFlight/App Store gate
 | Item | Phase | Notes |
 |------|-------|-------|
 | App icon + launch screen | 16 | Placeholder asset catalog today |
-| Legal pages live | 15 | `AppLinks` → `jacobrozell.github.io/BeatMic/*` not deployed |
+| Legal pages live | 15 | `AppLinks` → `jacobrozell.github.io/RPM-Buddy/*` not deployed |
 | Device QA with real music | 16 | Simulator mic is unreliable; vinyl, speaker, Bluetooth, quiet rooms |
 | VoiceOver walkthrough | 11 | Identifiers exist; no manual sign-off |
 | Dynamic Type at AXXXL | 11 | 72pt BPM + chip row may clip |

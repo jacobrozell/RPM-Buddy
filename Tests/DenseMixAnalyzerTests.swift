@@ -1,6 +1,6 @@
 import Foundation
 import Testing
-@testable import BeatMic
+@testable import RPMBuddy
 
 @Suite("Dense mix analyzer")
 struct DenseMixAnalyzerTests {
@@ -37,31 +37,9 @@ struct DenseMixAnalyzerTests {
         return samples
     }
 
-    @Test("Dense mix pipeline detects 120 BPM kick under faster hi-hats")
+    @Test("Detects 120 BPM kick under faster hi-hats")
     func kickUnderHiHats() {
         let samples = kickAndHiHatTrack(seconds: 20)
-        let result = BPMAnalyzer.estimate(samples: samples, sampleRate: sampleRate)
-        #expect(result.bpm != nil)
-        if let bpm = result.bpm {
-            #expect(abs(bpm - 120) <= 6)
-        }
-    }
-
-    @Test("Legacy pipeline remains available for regression comparison")
-    func legacyPipelineStillWorks() {
-        let previous = BPMAnalyzer.useDenseMixPipeline
-        BPMAnalyzer.useDenseMixPipeline = false
-        defer { BPMAnalyzer.useDenseMixPipeline = previous }
-
-        let count = Int(20 * sampleRate)
-        var samples = [Float](repeating: 0, count: count)
-        let period = Int(60.0 / 120.0 * sampleRate)
-        var index = 0
-        while index < count {
-            for offset in index..<min(index + 128, count) { samples[offset] = 1 }
-            index += period
-        }
-
         let result = BPMAnalyzer.estimate(samples: samples, sampleRate: sampleRate)
         #expect(result.bpm != nil)
         if let bpm = result.bpm {

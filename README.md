@@ -1,8 +1,8 @@
-# BeatMic
+# RPM Buddy
 
 A minimal iOS app that listens through the microphone, estimates the tempo of nearby music, and shows how trustworthy the analysis is via a confidence meter.
 
-**Status:** v1 complete · **Bundle:** `com.jacobrozell.beatmic` · **Min iOS:** 18.0 · Pre-ship polish
+**Status:** v1 complete · **Bundle:** `com.jacobrozell.rpmbuddy` · **Min iOS:** 18.0 · Pre-ship polish
 
 Product specs live in [`specs/`](specs/README.md). Shipped vs planned features: [`docs/feature-inventory.md`](docs/feature-inventory.md).
 
@@ -29,7 +29,7 @@ Requires **Xcode 16+** and **iOS 18+**. The Xcode project is generated from `pro
 ```bash
 brew install xcodegen   # once
 xcodegen generate
-open BeatMic.xcodeproj
+open RPMBuddy.xcodeproj
 ```
 
 Select an iPhone simulator (or device) and press **⌘R**. Signing uses team `7JT2JB89AV`.
@@ -48,7 +48,7 @@ bash Scripts/ci/verify-local.sh
 
 | Gate | What runs |
 |------|-----------|
-| **PR CI** | SwiftLint + `BeatMicCI` unit tests on iPhone 17 simulator |
+| **PR CI** | SwiftLint + `RPMBuddyCI` unit tests on iPhone 17 simulator |
 
 Unit tests analyze bundled metronome WAVs. UI smoke tests use `-ui_test_mock_bpm 120` because the simulator mic is unreliable.
 
@@ -83,8 +83,8 @@ The BPM engine is pure Swift — no SwiftUI imports — so core analysis is full
 
 | Setting | Value |
 |---------|-------|
-| **Name** | BeatMic |
-| **Bundle** | `com.jacobrozell.beatmic` |
+| **Name** | RPM Buddy |
+| **Bundle** | `com.jacobrozell.rpmbuddy` |
 | **Min iOS** | 18.0 |
 | **Locale** | English |
 | **Orientation** | Portrait |

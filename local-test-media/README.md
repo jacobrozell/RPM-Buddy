@@ -1,6 +1,6 @@
 # Local test media (not shipped)
 
-Put **personally owned** albums here for BeatMic development QA. Nothing in this tree is bundled in the app or committed to git.
+Put **personally owned** albums here for RPM Buddy development QA. Nothing in this tree is bundled in the app or committed to git.
 
 ## Layout
 
@@ -18,7 +18,7 @@ local-test-media/
 ## Manual mic test
 
 1. Play a track on a speaker (or AirPlay to a device near the phone).
-2. Open BeatMic → **Listen** and hold the mic toward the speaker.
+2. Open RPM Buddy → **Listen** and hold the mic toward the speaker.
 3. Compare logged BPM + confidence against your known track tempo (if any).
 
 ## Batch file analysis (DEBUG, local only)
@@ -40,9 +40,9 @@ Requires a prior build. Results print to the terminal; nothing is uploaded or em
 When `local-test-media/Mac Miller - Faces/` exists, run:
 
 ```bash
-xcodebuild test -project BeatMic.xcodeproj -scheme BeatMicCI \
+xcodebuild test -project RPMBuddy.xcodeproj -scheme RPMBuddyCI \
   -destination 'platform=iOS Simulator,name=iPhone 16' \
-  -only-testing:BeatMicTests/FacesAlbumAnalysisTests
+  -only-testing:RPMBuddyTests/FacesAlbumAnalysisTests
 ```
 
 Or use the analyze script above (same test suites). Tests skip silently in CI when album folders are absent.
@@ -52,9 +52,9 @@ Or use the analyze script above (same test suites). Tests skip silently in CI wh
 When `local-test-media/I Love Life Thank You/` exists:
 
 ```bash
-xcodebuild test -project BeatMic.xcodeproj -scheme BeatMicCI \
+xcodebuild test -project RPMBuddy.xcodeproj -scheme RPMBuddyCI \
   -destination 'platform=iOS Simulator,name=iPhone 16' \
-  -only-testing:BeatMicTests/ILTYAlbumAnalysisTests
+  -only-testing:RPMBuddyTests/ILTYAlbumAnalysisTests
 ```
 
 ## Release rule

@@ -10,8 +10,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  CI_XCODE_PROJECT: BeatMic.xcodeproj
-  CI_XCODE_SCHEME: BeatMicCI
+  CI_XCODE_PROJECT: RPMBuddy.xcodeproj
+  CI_XCODE_SCHEME: RPMBuddyCI
   SIM_DESTINATION: platform=iOS Simulator,name=iPhone 17
 
 jobs:

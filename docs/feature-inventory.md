@@ -1,4 +1,4 @@
-# Feature inventory — BeatMic
+# Feature inventory — RPM Buddy
 
 **Last updated:** 2026-06-21
 

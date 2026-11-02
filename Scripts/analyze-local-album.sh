@@ -27,22 +27,22 @@ fi
 
 xcodegen generate
 
-export BEATMIC_LOCAL_AUDIO_DIR="${ALBUM_DIR}"
+export RPMBUDDY_LOCAL_AUDIO_DIR="${ALBUM_DIR}"
 
 echo "Analyzing audio in: ${ALBUM_DIR}"
 echo ""
 
 xcodebuild test \
-  -project BeatMic.xcodeproj \
-  -scheme BeatMicCI \
+  -project RPMBuddy.xcodeproj \
+  -scheme RPMBuddyCI \
   -destination 'platform=iOS Simulator,name=iPhone 16' \
   -derivedDataPath DerivedData \
-  -only-testing:BeatMicTests/FacesAlbumAnalysisTests \
-  -only-testing:BeatMicTests/ILTYAlbumAnalysisTests \
+  -only-testing:RPMBuddyTests/FacesAlbumAnalysisTests \
+  -only-testing:RPMBuddyTests/ILTYAlbumAnalysisTests \
   CODE_SIGN_IDENTITY=- \
   CODE_SIGNING_REQUIRED=NO \
   CODE_SIGNING_ALLOWED=NO \
-  2>&1 | tee /tmp/beatmic-local-album.log | rg 'Faces |Summary|✔|✘|Issue|error:|TEST SUCCEEDED|TEST FAILED' || true
+  2>&1 | tee /tmp/rpmbuddy-local-album.log | rg 'Faces |Summary|✔|✘|Issue|error:|TEST SUCCEEDED|TEST FAILED' || true
 
 echo ""
-echo "Full log: /tmp/beatmic-local-album.log"
+echo "Full log: /tmp/rpmbuddy-local-album.log"

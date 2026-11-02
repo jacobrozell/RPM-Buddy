@@ -1,5 +1,5 @@
 {
-  "description": "BeatMic metronome fixtures for analyzer verification",
+  "description": "RPMBuddy metronome fixtures for analyzer verification",
   "fixtures": [
     {
       "filename": "metronome-90bpm-30s.wav",
