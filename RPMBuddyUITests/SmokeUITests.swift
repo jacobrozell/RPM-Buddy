@@ -1,5 +1,6 @@
 import XCTest
 
+@MainActor
 class RPMBuddyUITestCase: XCTestCase {
     let timeout: TimeInterval = 12
 
@@ -25,6 +26,7 @@ class RPMBuddyUITestCase: XCTestCase {
     }
 }
 
+@MainActor
 final class SmokeUITests: RPMBuddyUITestCase {
     func testDetectorShowsMockBPM() {
         let app = launchApp()
@@ -49,6 +51,14 @@ final class SmokeUITests: RPMBuddyUITestCase {
 
         let confidence = app.otherElements["detector.confidence.meter"]
         XCTAssertTrue(confidence.waitForExistence(timeout: timeout))
+
+        let tooFast = app.buttons["detector.count.tooFast"]
+        XCTAssertTrue(tooFast.waitForExistence(timeout: timeout))
+        if !tooFast.isHittable {
+            app.swipeUp()
+        }
+        tooFast.tap()
+        XCTAssertTrue(bpm.label.contains("60"))
     }
 
     func testSettingsOpensFromDetector() {

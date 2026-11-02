@@ -22,11 +22,11 @@ Prioritized polish from MVP review. Legend: **ship** = TestFlight/App Store gate
 
 | Item | Why |
 |------|-----|
-| **Tap alternative to promote** | User picks 60 vs 120 as primary; chips become interactive |
+| **Tap alternative to promote** | Shipped as Too slow / Too fast, which lock the next count in the family |
 | **Lock reading button** | Explicit save when user agrees; not only auto-log on stability |
 | **Session history (last 5–10)** | Timestamp + alternatives already exist; list is natural next step |
-| **Tap tempo fallback** | When confidence stays low, manual tap-to-count path |
-| **Haptic pulse at BPM** | Subtle metronome while listening |
+| **Tap tempo fallback** | Shipped: Tap the beat snaps the octave and flashes on the downbeat |
+| **Haptic pulse at BPM** | Shipped. The tick schedule is unit-tested; UI tests skip the live loop. |
 | **Clear listening states** | Distinct UI: waiting / hearing / analyzing / logged (not just footnote) |
 | **Signal-guided copy** | Tie input level to “move closer,” “try the chorus,” etc. |
 

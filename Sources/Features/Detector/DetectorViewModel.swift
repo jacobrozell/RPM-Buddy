@@ -29,6 +29,14 @@ private enum DetectorStatusCopy {
         localized: "detector.status.estimating",
         defaultValue: "Estimating tempo…"
     )
+    static let synced = String(
+        localized: "detector.status.synced",
+        defaultValue: "Beat synced to your taps."
+    )
+    static let countLocked = String(
+        localized: "detector.status.countLocked",
+        defaultValue: "Count locked."
+    )
     static let quiet = String(
         localized: "detector.status.quiet",
         defaultValue: "Signal is very quiet — move closer to the speaker."
@@ -44,6 +52,11 @@ final class DetectorViewModel {
     private(set) var permission: MicPermissionState = .unknown
     private(set) var isListening = false
     private(set) var statusMessage = DetectorStatusCopy.idle
+    private(set) var beatSync: BeatSyncLock?
+    private(set) var beatSyncHint: BeatSyncHint?
+    private(set) var acceptedTapCount = 0
+    private(set) var feltBeat: FeltBeat?
+    private(set) var beatTick = 0
 
     private let capture = LiveAudioCapture()
     private let logger: any AppLogger
@@ -54,13 +67,17 @@ final class DetectorViewModel {
     private var listenSource = "mic"
     private var didLockTempo = false
     private var didLogQuiet = false
+    private var tapDates: [Date] = []
+    private var lastLoggedSyncBPM: Int?
+    private var pulseTask: Task<Void, Never>?
+    private var scheduledTick: Date?
 
     init(logger: any AppLogger = AppLogging.logger) {
         self.logger = logger
     }
 
     var displayedBPM: Int? {
-        loggedReading?.primaryBPM ?? estimate.bpm
+        beatSync?.bpm ?? loggedReading?.primaryBPM ?? estimate.bpm
     }
 
     var loggedTimestampText: String? {
@@ -90,7 +107,87 @@ final class DetectorViewModel {
         }
     }
 
+    func registerTap(at date: Date = Date()) {
+        if let last = tapDates.last, date.timeIntervalSince(last) < TapBeatSync.minInterval {
+            return
+        }
+        tapDates.append(date)
+        if tapDates.count > 8 { tapDates.removeFirst() }
+        acceptedTapCount += 1
+
+        if let sync = beatSync, sync.holdsCount {
+            beatSync = BeatSyncLock(
+                bpm: sync.bpm,
+                phaseAnchor: date,
+                usedMicrophone: sync.usedMicrophone,
+                tapBPM: sync.tapBPM,
+                pulseBPM: sync.pulseBPM,
+                holdsCount: true
+            )
+            refreshFeltBeat(now: date)
+            return
+        }
+
+        guard let tapBPM = TapBeatSync.tapBPM(from: tapDates) else {
+            beatSyncHint = .keepTapping
+            return
+        }
+
+        let familyPulse = beatSync?.pulseBPM
+        let detected = familyPulse ?? loggedReading?.primaryBPM ?? estimate.bpm
+        let resolved = TapBeatSync.resolve(tapBPM: tapBPM, detectedBPM: detected)
+        let confidence = loggedReading?.confidence ?? estimate.confidence
+        let pulse = resolved.usedMicrophone ? (familyPulse ?? detected ?? resolved.bpm) : resolved.bpm
+        beatSync = BeatSyncLock(
+            bpm: resolved.bpm,
+            phaseAnchor: date,
+            usedMicrophone: resolved.usedMicrophone,
+            tapBPM: tapBPM,
+            pulseBPM: pulse,
+            holdsCount: false
+        )
+        loggedReading = TempoReading.make(
+            primaryBPM: resolved.bpm,
+            confidence: confidence,
+            loggedAt: loggedReading?.loggedAt ?? date
+        )
+        beatSyncHint = resolved.usedMicrophone ? .synced : .countedFromTaps
+        refreshFeltBeat(now: date)
+        logBeatSync(bpm: resolved.bpm, usedMicrophone: resolved.usedMicrophone, status: nil)
+    }
+
+    func countStep(faster: Bool) -> Int? {
+        guard let current = displayedBPM else { return nil }
+        let pulse = beatSync?.pulseBPM ?? current
+        return OctaveCount.step(from: current, pulse: pulse, faster: faster)
+    }
+
+    func stepCount(faster: Bool, at date: Date = Date()) {
+        guard let current = displayedBPM else { return }
+        let pulse = beatSync?.pulseBPM ?? current
+        guard let next = OctaveCount.step(from: current, pulse: pulse, faster: faster) else { return }
+        let anchor = beatSync?.phaseAnchor ?? feltBeat?.anchor ?? date
+        let fromMicrophone = beatSync?.usedMicrophone ?? true
+        beatSync = BeatSyncLock(
+            bpm: next,
+            phaseAnchor: anchor,
+            usedMicrophone: fromMicrophone,
+            tapBPM: beatSync?.tapBPM ?? current,
+            pulseBPM: pulse,
+            holdsCount: true
+        )
+        loggedReading = TempoReading.make(
+            primaryBPM: next,
+            confidence: loggedReading?.confidence ?? estimate.confidence,
+            loggedAt: loggedReading?.loggedAt ?? date
+        )
+        beatSyncHint = .countLocked
+        refreshFeltBeat(now: date)
+        logBeatSync(bpm: next, usedMicrophone: fromMicrophone, status: "octave")
+    }
+
     func startListening() async {
+        clearBeatSync()
         loggedReading = nil
         estimate = BPMEstimate.silent
         recentEstimates.removeAll()
@@ -143,11 +240,17 @@ final class DetectorViewModel {
         }
         isListening = false
         listenStartedAt = nil
+        pulseTask?.cancel()
+        pulseTask = nil
         inputLevel = 0
         estimate = BPMEstimate.silent
-        statusMessage = loggedReading == nil
-            ? DetectorStatusCopy.idle
-            : DetectorStatusCopy.estimating
+        if beatSync != nil {
+            statusMessage = lockedStatusMessage()
+        } else if loggedReading == nil {
+            statusMessage = DetectorStatusCopy.idle
+        } else {
+            statusMessage = DetectorStatusCopy.estimating
+        }
         guard wasListening else { return }
         let seconds = startedAt.map { Date().timeIntervalSince($0) } ?? 0
         logger.info(
@@ -181,9 +284,45 @@ final class DetectorViewModel {
         let analysisRate = BPMAnalyzer.effectiveSampleRate(sourceRate: capture.sampleRate)
         let raw = BPMAnalyzer.estimate(samples: normalized, sampleRate: analysisRate)
         estimate = smooth(raw)
-        if let bpm = estimate.bpm, estimate.confidence >= 0.12 {
+        adoptCurrentEstimate()
+    }
+
+    private func adoptCurrentEstimate() {
+        if var sync = beatSync {
+            if sync.holdsCount {
+                let confidence = sync.usedMicrophone && estimate.bpm != nil
+                    ? estimate.confidence
+                    : (loggedReading?.confidence ?? 0)
+                loggedReading = TempoReading.make(
+                    primaryBPM: sync.bpm,
+                    confidence: confidence,
+                    loggedAt: loggedReading?.loggedAt ?? Date()
+                )
+            } else if let detected = estimate.bpm, estimate.confidence >= 0.12 {
+                let resolved = TapBeatSync.resolve(tapBPM: sync.tapBPM, detectedBPM: detected)
+                if resolved.bpm != sync.bpm || resolved.usedMicrophone != sync.usedMicrophone {
+                    sync = BeatSyncLock(
+                        bpm: resolved.bpm,
+                        phaseAnchor: sync.phaseAnchor,
+                        usedMicrophone: resolved.usedMicrophone,
+                        tapBPM: sync.tapBPM,
+                        pulseBPM: sync.pulseBPM,
+                        holdsCount: false
+                    )
+                    beatSync = sync
+                    beatSyncHint = resolved.usedMicrophone ? .synced : .countedFromTaps
+                    logBeatSync(bpm: resolved.bpm, usedMicrophone: resolved.usedMicrophone, status: nil)
+                }
+                loggedReading = TempoReading.make(
+                    primaryBPM: sync.bpm,
+                    confidence: estimate.confidence,
+                    loggedAt: loggedReading?.loggedAt ?? Date()
+                )
+            }
+        } else if let bpm = estimate.bpm, estimate.confidence >= 0.12 {
             recordReading(primaryBPM: bpm, confidence: estimate.confidence)
         }
+        refreshFeltBeat()
         updateStatus(for: estimate)
     }
 
@@ -211,11 +350,95 @@ final class DetectorViewModel {
         listenSource = source
         listenStartedAt = Date()
         isListening = true
+        startPulseLoop()
         logger.info(
             .detector,
             eventName: "listen_started",
             message: "Started listening.",
             metadata: ["source": source]
+        )
+    }
+
+    private func clearBeatSync() {
+        beatSync = nil
+        beatSyncHint = nil
+        feltBeat = nil
+        scheduledTick = nil
+        tapDates.removeAll()
+        lastLoggedSyncBPM = nil
+    }
+
+    private func lockedStatusMessage() -> String {
+        beatSync?.holdsCount == true ? DetectorStatusCopy.countLocked : DetectorStatusCopy.synced
+    }
+
+    private func refreshFeltBeat(now: Date = Date()) {
+        let previous = feltBeat
+        guard let bpm = displayedBPM else {
+            feltBeat = nil
+            scheduledTick = nil
+            return
+        }
+        if let beatSync {
+            feltBeat = FeltBeat(bpm: beatSync.bpm, anchor: beatSync.phaseAnchor)
+        } else if let feltBeat, abs(feltBeat.bpm - bpm) <= 4 {
+            self.feltBeat = FeltBeat(bpm: bpm, anchor: feltBeat.anchor)
+        } else {
+            feltBeat = FeltBeat(bpm: bpm, anchor: now)
+        }
+        if feltBeat != previous {
+            scheduledTick = nil
+        }
+    }
+
+    func advancePulse(to now: Date) {
+        guard isListening, let beat = feltBeat, beat.bpm > 0 else { return }
+        if scheduledTick == nil {
+            scheduledTick = BeatPulseSchedule.nextDownbeat(bpm: beat.bpm, anchor: beat.anchor, after: now)
+            return
+        }
+        guard let due = scheduledTick, now >= due else { return }
+        beatTick &+= 1
+        let period = 60.0 / Double(beat.bpm)
+        var next = due.addingTimeInterval(period)
+        if now >= next {
+            next = BeatPulseSchedule.nextDownbeat(bpm: beat.bpm, anchor: beat.anchor, after: now)
+        }
+        scheduledTick = next
+    }
+
+    private func startPulseLoop() {
+        guard LaunchConfiguration.mockBPM == nil else { return }
+        pulseTask?.cancel()
+        pulseTask = Task { [weak self] in
+            while !Task.isCancelled {
+                guard let self else { return }
+                guard self.isListening, self.feltBeat != nil else {
+                    try? await Task.sleep(for: .milliseconds(200))
+                    continue
+                }
+                let ticksBefore = self.beatTick
+                self.advancePulse(to: Date())
+                guard self.beatTick == ticksBefore, let due = self.scheduledTick else { continue }
+                let wait = min(max(due.timeIntervalSince(Date()), 0.02), 0.5)
+                try? await Task.sleep(for: .seconds(wait))
+            }
+        }
+    }
+
+    private func logBeatSync(bpm: Int, usedMicrophone: Bool, status: String?) {
+        if let lastLoggedSyncBPM, abs(lastLoggedSyncBPM - bpm) <= 4 { return }
+        lastLoggedSyncBPM = bpm
+        let resolvedStatus = status ?? (usedMicrophone ? "snapped" : "tap_only")
+        logger.info(
+            .detector,
+            eventName: "beat_synced",
+            message: resolvedStatus == "octave" ? "Count locked from the pulse." : "Beat synced from taps.",
+            metadata: [
+                "source": resolvedStatus == "octave" ? "octave" : "tap",
+                "status": resolvedStatus,
+                "bpmBucket": AnalyticsBuckets.bpmBucket(bpm)
+            ]
         )
     }
 
@@ -277,6 +500,10 @@ final class DetectorViewModel {
     }
 
     private func updateStatus(for estimate: BPMEstimate) {
+        if beatSync != nil {
+            statusMessage = lockedStatusMessage()
+            return
+        }
         if loggedReading != nil || estimate.bpm != nil {
             statusMessage = DetectorStatusCopy.estimating
         } else if inputLevel < 0.015 {
@@ -301,6 +528,7 @@ final class DetectorViewModel {
         estimate = BPMEstimate(bpm: bpm, confidence: 0.82)
         loggedReading = TempoReading.make(primaryBPM: bpm, confidence: 0.82, loggedAt: Date())
         logTempoLocked(bpm: bpm, confidence: 0.82)
+        refreshFeltBeat()
         statusMessage = DetectorStatusCopy.estimating
         mockTask?.cancel()
         mockTask = Task { [weak self] in
@@ -330,6 +558,15 @@ extension DetectorViewModel {
                 loggedAt: loggedAt
             )
         }
+    }
+
+    func applyEstimateForTesting(bpm: Int?, confidence: Double) {
+        estimate = BPMEstimate(bpm: bpm, confidence: confidence)
+        adoptCurrentEstimate()
+    }
+
+    func enableListeningForTesting() {
+        isListening = true
     }
 }
 #endif

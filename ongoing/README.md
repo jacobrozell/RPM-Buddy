@@ -10,6 +10,7 @@
 | Sensitivity / quiet listening | 🟡 | [`docs/brainstorm-sensitivity.md`](../docs/brainstorm-sensitivity.md) — adaptive normalize shipped; dense mix spec drafted |
 | Dense mix tempo (Insomniak / Faces) | 📋 | [`specs/DenseMixTempoSpec.md`](../specs/DenseMixTempoSpec.md) — multi-band flux + BPM comb scoring |
 | First TestFlight and a device listen | [`docs/agent-build-checklist.md`](../docs/agent-build-checklist.md) | Xcode Cloud Release build 2 started 2026-11-02. After TestFlight, one on-device listen. Legal URLs still open. |
+| 1.0 review lanes | [`1.0-review-fixes.md`](1.0-review-fixes.md) | Security clean. Count lock and beat ticks are in the CI scheme. Legal pages stay with you to publish. |
 
 ## Finished
 
@@ -22,4 +23,4 @@
 ## Related
 
 - [`../docs/agent-build-checklist.md`](../docs/agent-build-checklist.md) — phase status  
-- [`../FutureIdeas/backlog.md`](../FutureIdeas/backlog.md) — post-v1 ideas (incl. SPM package → MixStack)  
+- [`../FutureIdeas/backlog.md`](../FutureIdeas/backlog.md) — post-v1 ideas (incl. SPM package → Studio Buddy)  

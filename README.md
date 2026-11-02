@@ -12,13 +12,15 @@ Product specs live in [`specs/`](specs/README.md). Shipped vs planned features: 
 
 - **Live BPM detection** — real-time tempo analysis from the mic with logged readings and timestamps
 - **Half/double-time alternatives** — tap to switch when the detector locks to a related tempo
+- **Tap the beat** — tap along to pick the count and flash a pulse on your downbeat
+- **Too slow / Too fast** — lock the next count when the pulse feels rushed or dragged
 - **Confidence meter** — visual trust indicator for the current reading
 - **Input level meter** — see when the mic is picking up signal
 - **Mic permission onboarding** — first-run explanation before capture starts
 - **Metronome self-test** — bundled WAV fixtures + in-app verification (Settings → Run metronome verification)
 - **Settings** — legal links; no accounts or IAP
 
-**Planned (post-v1):** session history, tap tempo — see feature inventory.
+**Planned (post-v1):** session history — see feature inventory.
 
 ---
 

@@ -14,6 +14,7 @@ enum FirebaseAnalyticsEventMapping {
         "listen_failed",
         "listen_quiet",
         "tempo_locked",
+        "beat_synced",
         "settings_opened",
         "metronome_self_test_completed"
     ]

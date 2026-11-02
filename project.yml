@@ -136,6 +136,8 @@ schemes:
     test:
       targets:
         - RPMBuddyTests
+        - name: RPMBuddyUISmokeUITests
+          parallelizable: false
       gatherCoverageData: true
 
   RPMBuddyUISmoke:

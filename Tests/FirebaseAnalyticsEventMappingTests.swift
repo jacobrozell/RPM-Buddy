@@ -45,6 +45,29 @@ func mapsTempoLockedWithoutRawReading() {
     #expect(event?.parameters["samples"] == nil)
 }
 
+@Test("Beat sync maps buckets and drops an exact BPM")
+func mapsBeatSyncedWithoutExactBPM() {
+    let entry = LogEntry(
+        timestamp: Date(),
+        level: .info,
+        category: .detector,
+        eventName: "beat_synced",
+        message: "Synced.",
+        metadata: [
+            "bpmBucket": "80_89",
+            "source": "tap",
+            "status": "snapped",
+            "bpm": "80"
+        ]
+    )
+
+    let event = FirebaseAnalyticsEventMapping.map(entry, appVersion: nil)
+    #expect(event?.name == "beat_synced")
+    #expect(event?.parameters["bpmBucket"] == "80_89")
+    #expect(event?.parameters["status"] == "snapped")
+    #expect(event?.parameters["bpm"] == nil)
+}
+
 @Test("Unknown events stay out of GA4")
 func dropsNonAllowlistedEvents() {
     let entry = LogEntry(

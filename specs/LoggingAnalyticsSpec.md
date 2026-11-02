@@ -29,6 +29,7 @@ Feature → AppLogging.logger → DefaultAppLogger
 | `listen_failed` | Capture throws (`errorCode=capture_failed`) or listen tapped without mic permission |
 | `listen_quiet` | Once per session when the signal stays quiet |
 | `tempo_locked` | First stable reading in the session |
+| `beat_synced` | Taps or Too slow / Too fast lock a count. `status` is `snapped`, `tap_only`, or `octave`. BPM stays bucketed. |
 | `settings_opened` | Settings sheet |
 | `metronome_self_test_completed` | Settings verification finishes |
 

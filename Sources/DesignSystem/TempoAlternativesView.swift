@@ -10,7 +10,7 @@ struct TempoAlternativesView: View {
             Text(String(
                 localized: "tempo.alternatives.caption",
                 defaultValue: """
-                Tempo detectors often lock to half- or double-time. Try the count that matches the music.
+                Same pulse, counted slower or faster. Too slow and Too fast lock one of these in.
                 """
             ))
             .font(.caption)
