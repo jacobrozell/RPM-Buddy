@@ -8,7 +8,7 @@ See [`README.md`](README.md) for setup. Run `xcodegen generate` after editing `p
 - `Sources/Data/` — microphone capture
 - `Sources/Features/` — SwiftUI flows (detector, onboarding, settings)
 - `Sources/DesignSystem/` — shared UI components
-- `Sources/Support/` — launch configuration, links, accessibility IDs
+- `Sources/Support/` — launch configuration, links, accessibility IDs, logging, Firebase bootstrap
 - `Tests/` — Swift Testing unit tests
 - `RPMBuddyUITests/` — UI smoke tests (mock BPM launch args)
 
@@ -23,3 +23,6 @@ See [`README.md`](README.md) for setup. Run `xcodegen generate` after editing `p
 
 - `-ui_test_skip_mic_onboarding` — opens detector without permission sheet
 - `-ui_test_mock_bpm 120` — simulates a stable 120 BPM reading
+- `-ui_test_reset` — disables Firebase Analytics and Crashlytics
+
+Copy `Resources/GoogleService-Info.plist.example` to `Resources/GoogleService-Info.plist` for local builds. Replace placeholders from the Firebase console before a Release archive. Never commit the real plist.

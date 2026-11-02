@@ -21,6 +21,10 @@ RPMBuddy.xcodeproj/
 
 tmp/
 
+# Firebase (copy from Resources/GoogleService-Info.plist.example)
+**/GoogleService-Info.plist
+!**/GoogleService-Info.plist.example
+
 # Personal / owned audio for local QA — never commit or ship
 local-test-media/*
 !local-test-media/README.md

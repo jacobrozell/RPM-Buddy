@@ -35,6 +35,15 @@ jobs:
         with:
           xcode-version: '26.2'
       - run: brew install xcodegen xcbeautify
+      - name: Block tracked Firebase plist
+        run: |
+          tracked=$(git ls-files '**/GoogleService-Info.plist' | grep -v '\.example$' || true)
+          if [ -n "$tracked" ]; then
+            echo "::error::Tracked GoogleService-Info.plist must stay gitignored: $tracked"
+            exit 1
+          fi
+      - name: Prepare Firebase config
+        run: cp Resources/GoogleService-Info.plist.example Resources/GoogleService-Info.plist
       - run: bash Scripts/sync-metronome-fixtures.sh
       - run: xcodegen generate
       - name: Build for Testing

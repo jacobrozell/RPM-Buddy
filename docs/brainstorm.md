@@ -35,6 +35,6 @@ Simple microphone app: hold the phone up to a record or speaker, analyze ambient
 | App name | RPM Buddy |
 | Bundle ID | com.jacobrozell.rpmbuddy |
 | Min iOS | 18.0 |
-| Telemetry | Off |
+| Telemetry | GA4 via Firebase Analytics in Release; off in Debug |
 | Orientation | Portrait only |
 | Tip link | None |

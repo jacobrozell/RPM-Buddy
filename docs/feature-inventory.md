@@ -1,6 +1,6 @@
 # Feature inventory — RPM Buddy
 
-**Last updated:** 2026-06-21
+**Last updated:** 2026-11-02
 
 | Feature | Status | Spec |
 |---------|--------|------|
@@ -12,9 +12,10 @@
 | Input level meter | ✅ v1 | [BPMDetectorSpec](../specs/BPMDetectorSpec.md) |
 | Mic permission onboarding | ✅ v1 | [AppShellSpec](../specs/AppShellSpec.md) |
 | Settings + legal links | ✅ v1 | [AppShellSpec](../specs/AppShellSpec.md) |
+| GA4 / Firebase Analytics + logging | ✅ v1 | [LoggingAnalyticsSpec](../specs/LoggingAnalyticsSpec.md) |
 | Session history | ⛔ planned | FutureIdeas |
 | Tap tempo | ⛔ planned | FutureIdeas |
 
 ## Release surface
 
-v1 exposes only the detector flow and settings. No accounts, no analytics, no IAP.
+v1 exposes the detector flow and settings. No accounts and no IAP. Release builds with a real Firebase plist send an allowlisted GA4 event set. Audio stays on device.

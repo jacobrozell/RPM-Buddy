@@ -90,6 +90,17 @@ struct SettingsView: View {
         isRunningSelfTest = true
         selfTestResults = MetronomeFixtureCatalog.generated.map { MetronomeSelfTest.run(fixture: $0) }
         isRunningSelfTest = false
+        let failedCount = selfTestResults.filter { !$0.passed }.count
+        AppLogging.logger.info(
+            .settings,
+            eventName: "metronome_self_test_completed",
+            message: "Metronome self-test finished.",
+            metadata: [
+                "status": failedCount == 0 ? "passed" : "failed",
+                "passedCount": String(selfTestResults.count - failedCount),
+                "failedCount": String(failedCount)
+            ]
+        )
     }
 
     private var appVersion: String {

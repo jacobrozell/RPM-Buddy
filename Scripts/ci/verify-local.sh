@@ -9,6 +9,10 @@ if [[ ! -f Resources/Fixtures/metronome-120bpm-30s.wav ]]; then
   bash Scripts/sync-metronome-fixtures.sh
 fi
 
+if [[ ! -f Resources/GoogleService-Info.plist ]]; then
+  cp Resources/GoogleService-Info.plist.example Resources/GoogleService-Info.plist
+fi
+
 xcodegen generate
 swiftlint --strict
 

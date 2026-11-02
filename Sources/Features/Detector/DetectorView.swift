@@ -29,6 +29,11 @@ struct DetectorView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
+                        AppLogging.logger.info(
+                            .settings,
+                            eventName: "settings_opened",
+                            message: "Opened settings."
+                        )
                         showsSettings = true
                     } label: {
                         Image(systemName: "gearshape")

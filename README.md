@@ -16,7 +16,7 @@ Product specs live in [`specs/`](specs/README.md). Shipped vs planned features: 
 - **Input level meter** — see when the mic is picking up signal
 - **Mic permission onboarding** — first-run explanation before capture starts
 - **Metronome self-test** — bundled WAV fixtures + in-app verification (Settings → Run metronome verification)
-- **Settings** — legal links; no accounts, analytics, or IAP in v1
+- **Settings** — legal links; no accounts or IAP
 
 **Planned (post-v1):** session history, tap tempo — see feature inventory.
 
@@ -73,6 +73,7 @@ The BPM engine is pure Swift — no SwiftUI imports — so core analysis is full
 | Agent build phases | [`docs/agent-build-checklist.md`](docs/agent-build-checklist.md) |
 | What ships today | [`docs/feature-inventory.md`](docs/feature-inventory.md) |
 | BPM detector spec | [`specs/BPMDetectorSpec.md`](specs/BPMDetectorSpec.md) |
+| Analytics and logging | [`specs/LoggingAnalyticsSpec.md`](specs/LoggingAnalyticsSpec.md) |
 | App shell spec | [`specs/AppShellSpec.md`](specs/AppShellSpec.md) |
 | Metronome fixtures | [`Resources/Fixtures/README.md`](Resources/Fixtures/README.md) |
 | Contributing | [`CONTRIBUTING.md`](CONTRIBUTING.md) |
@@ -88,5 +89,5 @@ The BPM engine is pure Swift — no SwiftUI imports — so core analysis is full
 | **Min iOS** | 18.0 |
 | **Locale** | English |
 | **Orientation** | Portrait |
-| **Telemetry** | Off |
+| **Telemetry** | GA4 via Firebase Analytics in Release; off in Debug |
 | **Tip jar** | None |

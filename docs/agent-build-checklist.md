@@ -15,10 +15,12 @@ Legend: ✅ done · 🟡 partial · ⛔ not started
 | 4 | Persistence | ⚪ | N/A for v1 |
 | 5 | App shell | ✅ | Onboarding, root, settings |
 | 6 | First vertical slice | ✅ | Listen → analyze → BPM + confidence |
-| 7–16 | Polish / ship | ⛔ | App Store assets, legal pages, device QA |
+| 7–13, 15–16 | Polish / ship | ⛔ | App Store assets, legal pages, device QA |
+| 14 | Telemetry | 🟡 | Allowlisted GA4 + Crashlytics + logging. Deep links and widgets still out |
 
 ## Progress log
 
 | Date | Change | Notes |
 |------|--------|-------|
 | 2026-06-21 | Initial repo bootstrap | Detector MVP, tests, CI |
+| 2026-11-02 | Phase 14 telemetry | Firebase Analytics → GA4, Crashlytics breadcrumbs, OSLog facade |

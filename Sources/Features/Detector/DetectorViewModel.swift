@@ -46,9 +46,18 @@ final class DetectorViewModel {
     private(set) var statusMessage = DetectorStatusCopy.idle
 
     private let capture = LiveAudioCapture()
+    private let logger: any AppLogger
     private var analysisTask: Task<Void, Never>?
     private var mockTask: Task<Void, Never>?
     private var recentEstimates: [Int] = []
+    private var listenStartedAt: Date?
+    private var listenSource = "mic"
+    private var didLockTempo = false
+    private var didLogQuiet = false
+
+    init(logger: any AppLogger = AppLogging.logger) {
+        self.logger = logger
+    }
 
     var displayedBPM: Int? {
         loggedReading?.primaryBPM ?? estimate.bpm
@@ -59,21 +68,18 @@ final class DetectorViewModel {
     }
 
     func refreshPermission() {
-        switch AVAudioApplication.shared.recordPermission {
-        case .granted:
-            permission = .granted
-        case .denied:
-            permission = .denied
-        case .undetermined:
-            permission = .unknown
-        @unknown default:
-            permission = .unknown
+        let next = Self.permissionState(AVAudioApplication.shared.recordPermission)
+        let changed = next != permission
+        permission = next
+        if changed, next != .unknown {
+            logPermission(next)
         }
     }
 
     func requestPermission() async {
         let granted = await AVAudioApplication.requestRecordPermission()
         permission = granted ? .granted : .denied
+        logPermission(permission)
     }
 
     func toggleListening() async {
@@ -88,6 +94,8 @@ final class DetectorViewModel {
         loggedReading = nil
         estimate = BPMEstimate.silent
         recentEstimates.removeAll()
+        didLockTempo = false
+        didLogQuiet = false
 
         if let mockBPM = LaunchConfiguration.mockBPM {
             startMockListening(bpm: mockBPM)
@@ -95,20 +103,37 @@ final class DetectorViewModel {
         }
         guard permission == .granted else {
             statusMessage = DetectorStatusCopy.needMic
+            logger.warning(
+                .detector,
+                eventName: "listen_failed",
+                message: "Microphone permission is required.",
+                metadata: ["errorCode": "permission_required", "status": permissionToken(permission)]
+            )
             return
         }
         do {
             try capture.start()
-            isListening = true
+            beginListenSession(source: "mic")
             statusMessage = DetectorStatusCopy.listening
             startAnalysisLoop()
         } catch {
             isListening = false
+            listenStartedAt = nil
             statusMessage = DetectorStatusCopy.captureFailed
+            logger.error(
+                .detector,
+                eventName: "listen_failed",
+                message: "Microphone capture failed.",
+                metadata: ["errorCode": "capture_failed", "source": "mic"]
+            )
         }
     }
 
     func stopListening() {
+        let wasListening = isListening
+        let startedAt = listenStartedAt
+        let hadReading = loggedReading != nil
+        let source = listenSource
         analysisTask?.cancel()
         analysisTask = nil
         mockTask?.cancel()
@@ -117,11 +142,24 @@ final class DetectorViewModel {
             capture.stop()
         }
         isListening = false
+        listenStartedAt = nil
         inputLevel = 0
         estimate = BPMEstimate.silent
         statusMessage = loggedReading == nil
             ? DetectorStatusCopy.idle
             : DetectorStatusCopy.estimating
+        guard wasListening else { return }
+        let seconds = startedAt.map { Date().timeIntervalSince($0) } ?? 0
+        logger.info(
+            .detector,
+            eventName: "listen_stopped",
+            message: "Stopped listening.",
+            metadata: [
+                "source": source,
+                "durationBucket": AnalyticsBuckets.durationBucket(seconds: seconds),
+                "hadReading": hadReading ? "true" : "false"
+            ]
+        )
     }
 
     private func startAnalysisLoop() {
@@ -158,11 +196,70 @@ final class DetectorViewModel {
             )
             return
         }
+        let isFirstLock = loggedReading == nil
         loggedReading = TempoReading.make(
             primaryBPM: primaryBPM,
             confidence: confidence,
             loggedAt: Date()
         )
+        if isFirstLock {
+            logTempoLocked(bpm: primaryBPM, confidence: confidence)
+        }
+    }
+
+    private func beginListenSession(source: String) {
+        listenSource = source
+        listenStartedAt = Date()
+        isListening = true
+        logger.info(
+            .detector,
+            eventName: "listen_started",
+            message: "Started listening.",
+            metadata: ["source": source]
+        )
+    }
+
+    private func logTempoLocked(bpm: Int, confidence: Double) {
+        guard !didLockTempo else { return }
+        didLockTempo = true
+        logger.info(
+            .detector,
+            eventName: "tempo_locked",
+            message: "Tempo locked.",
+            metadata: [
+                "source": listenSource,
+                "bpmBucket": AnalyticsBuckets.bpmBucket(bpm),
+                "confidenceBucket": AnalyticsBuckets.confidenceBucket(confidence)
+            ]
+        )
+    }
+
+    private func logPermission(_ state: MicPermissionState) {
+        logger.info(
+            .detector,
+            eventName: "mic_permission_result",
+            message: "Microphone permission updated.",
+            metadata: ["status": permissionToken(state)]
+        )
+    }
+
+    private func permissionToken(_ state: MicPermissionState) -> String {
+        switch state {
+        case .granted: "granted"
+        case .denied: "denied"
+        case .unknown: "undetermined"
+        }
+    }
+
+    private static func permissionState(
+        _ recordPermission: AVAudioApplication.recordPermission
+    ) -> MicPermissionState {
+        switch recordPermission {
+        case .granted: .granted
+        case .denied: .denied
+        case .undetermined: .unknown
+        @unknown default: .unknown
+        }
     }
 
     private func smooth(_ raw: BPMEstimate) -> BPMEstimate {
@@ -184,16 +281,26 @@ final class DetectorViewModel {
             statusMessage = DetectorStatusCopy.estimating
         } else if inputLevel < 0.015 {
             statusMessage = DetectorStatusCopy.quiet
+            if !didLogQuiet {
+                didLogQuiet = true
+                logger.info(
+                    .detector,
+                    eventName: "listen_quiet",
+                    message: "Signal is quiet.",
+                    metadata: ["source": listenSource]
+                )
+            }
         } else {
             statusMessage = DetectorStatusCopy.listening
         }
     }
 
     private func startMockListening(bpm: Int) {
-        isListening = true
+        beginListenSession(source: "mock")
         inputLevel = 0.45
         estimate = BPMEstimate(bpm: bpm, confidence: 0.82)
         loggedReading = TempoReading.make(primaryBPM: bpm, confidence: 0.82, loggedAt: Date())
+        logTempoLocked(bpm: bpm, confidence: 0.82)
         statusMessage = DetectorStatusCopy.estimating
         mockTask?.cancel()
         mockTask = Task { [weak self] in
