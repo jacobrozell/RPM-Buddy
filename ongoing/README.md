@@ -9,7 +9,7 @@
 | Polish backlog | [`polish-backlog.md`](polish-backlog.md) | Prioritized UX, ship, visual, trust items |
 | Sensitivity / quiet listening | 🟡 | [`docs/brainstorm-sensitivity.md`](../docs/brainstorm-sensitivity.md) — adaptive normalize shipped; dense mix spec drafted |
 | Dense mix tempo (Insomniak / Faces) | 📋 | [`specs/DenseMixTempoSpec.md`](../specs/DenseMixTempoSpec.md) — multi-band flux + BPM comb scoring |
-| First TestFlight and a device listen | [`docs/agent-build-checklist.md`](../docs/agent-build-checklist.md) | Xcode Cloud Release build 3 started 2026-11-02 (`3f488387-032a-4307-8cc3-c1eb689e86c1`). After TestFlight, one on-device listen. Legal URLs still open. |
+| First TestFlight and a device listen | [`docs/agent-build-checklist.md`](../docs/agent-build-checklist.md) | Xcode Cloud Release build 4 started 2026-11-02 (`e8be8c0b-0248-4d8c-b10c-bf59d12ee73c`). Build 3 failed copying the Firebase plist. After TestFlight, one on-device listen. Legal URLs still open. |
 | 1.0 review lanes | [`1.0-review-fixes.md`](1.0-review-fixes.md) | Security clean. Count lock and beat ticks are in the CI scheme. Legal pages stay with you to publish. |
 
 ## Finished
