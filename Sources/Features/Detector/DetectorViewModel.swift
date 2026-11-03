@@ -1,4 +1,5 @@
 import AVFoundation
+import UIKit
 import Foundation
 import Observation
 
@@ -17,6 +18,10 @@ private enum DetectorStatusCopy {
         localized: "detector.status.needMic",
         defaultValue: "Microphone access is required to listen."
     )
+    static let starting = String(
+        localized: "detector.status.starting",
+        defaultValue: "Starting the microphone…"
+    )
     static let listening = String(
         localized: "detector.status.listening",
         defaultValue: "Listening… keep the mic near the beat."
@@ -24,6 +29,10 @@ private enum DetectorStatusCopy {
     static let captureFailed = String(
         localized: "detector.status.captureFailed",
         defaultValue: "Could not start the microphone."
+    )
+    static let micBusy = String(
+        localized: "detector.status.micBusy",
+        defaultValue: "The microphone is busy. Stop screen recording, then try Listen again."
     )
     static let estimating = String(
         localized: "detector.status.estimating",
@@ -41,6 +50,10 @@ private enum DetectorStatusCopy {
         localized: "detector.status.quiet",
         defaultValue: "Signal is very quiet — move closer to the speaker."
     )
+    static let stopped = String(
+        localized: "detector.status.stopped",
+        defaultValue: "Stopped. The last reading stays on screen."
+    )
 }
 
 @MainActor
@@ -57,8 +70,10 @@ final class DetectorViewModel {
     private(set) var acceptedTapCount = 0
     private(set) var feltBeat: FeltBeat?
     private(set) var beatTick = 0
+    private(set) var scans: [ScanRecord]
 
     private let capture = LiveAudioCapture()
+    private let scanHistory: any ScanHistoryStore
     private let logger: any AppLogger
     private var analysisTask: Task<Void, Never>?
     private var mockTask: Task<Void, Never>?
@@ -71,9 +86,22 @@ final class DetectorViewModel {
     private var lastLoggedSyncBPM: Int?
     private var pulseTask: Task<Void, Never>?
     private var scheduledTick: Date?
+    private var isStopping = false
+    private let beatFeedback = UIImpactFeedbackGenerator(style: .light)
+    private let tapFeedback = UIImpactFeedbackGenerator(style: .medium)
+    private(set) var isChangingListen = false
 
-    init(logger: any AppLogger = AppLogging.logger) {
+    init(
+        logger: any AppLogger = AppLogging.logger,
+        scanHistory: any ScanHistoryStore = FileScanHistoryStore()
+    ) {
         self.logger = logger
+        self.scanHistory = scanHistory
+        scans = scanHistory.load()
+    }
+
+    var showsPulse: Bool {
+        isListening && !isChangingListen && feltBeat != nil
     }
 
     var displayedBPM: Int? {
@@ -101,8 +129,8 @@ final class DetectorViewModel {
 
     func toggleListening() async {
         if isListening {
-            stopListening()
-        } else {
+            await stopListening()
+        } else if !isChangingListen {
             await startListening()
         }
     }
@@ -114,6 +142,7 @@ final class DetectorViewModel {
         tapDates.append(date)
         if tapDates.count > 8 { tapDates.removeFirst() }
         acceptedTapCount += 1
+        tapFeedback.impactOccurred()
 
         if let sync = beatSync, sync.holdsCount {
             beatSync = BeatSyncLock(
@@ -187,6 +216,7 @@ final class DetectorViewModel {
     }
 
     func startListening() async {
+        guard !isListening, !isChangingListen else { return }
         clearBeatSync()
         loggedReading = nil
         estimate = BPMEstimate.silent
@@ -208,50 +238,68 @@ final class DetectorViewModel {
             )
             return
         }
+        isChangingListen = true
+        defer { isChangingListen = false }
+        statusMessage = DetectorStatusCopy.starting
         do {
-            try capture.start()
+            try await capture.start()
             beginListenSession(source: "mic")
             statusMessage = DetectorStatusCopy.listening
             startAnalysisLoop()
         } catch {
+            await capture.stop()
             isListening = false
             listenStartedAt = nil
-            statusMessage = DetectorStatusCopy.captureFailed
+            statusMessage = captureFailureMessage(for: error)
             logger.error(
                 .detector,
                 eventName: "listen_failed",
                 message: "Microphone capture failed.",
-                metadata: ["errorCode": "capture_failed", "source": "mic"]
+                metadata: [
+                    "errorCode": "capture_failed",
+                    "source": "mic",
+                    "reason": String((error as NSError).code)
+                ]
             )
         }
     }
 
-    func stopListening() {
-        let wasListening = isListening
+    func stopListening() async {
+        guard isListening, !isStopping else { return }
+        isStopping = true
+        defer { isStopping = false }
+        isChangingListen = true
+        defer { isChangingListen = false }
         let startedAt = listenStartedAt
         let hadReading = loggedReading != nil
         let source = listenSource
+        let scanBPM = displayedBPM
+        let scanConfidence = loggedReading?.confidence ?? estimate.confidence
+        let scanLoggedAt = loggedReading?.loggedAt ?? Date()
         analysisTask?.cancel()
         analysisTask = nil
         mockTask?.cancel()
         mockTask = nil
+        pulseTask?.cancel()
+        pulseTask = nil
+        scheduledTick = nil
+        inputLevel = 0
+        if let scanBPM {
+            recordScan(bpm: scanBPM, confidence: scanConfidence, loggedAt: scanLoggedAt)
+        }
         if LaunchConfiguration.mockBPM == nil {
-            capture.stop()
+            await capture.stop()
         }
         isListening = false
         listenStartedAt = nil
-        pulseTask?.cancel()
-        pulseTask = nil
-        inputLevel = 0
         estimate = BPMEstimate.silent
         if beatSync != nil {
             statusMessage = lockedStatusMessage()
         } else if loggedReading == nil {
             statusMessage = DetectorStatusCopy.idle
         } else {
-            statusMessage = DetectorStatusCopy.estimating
+            statusMessage = DetectorStatusCopy.stopped
         }
-        guard wasListening else { return }
         let seconds = startedAt.map { Date().timeIntervalSince($0) } ?? 0
         logger.info(
             .detector,
@@ -269,20 +317,30 @@ final class DetectorViewModel {
         analysisTask?.cancel()
         analysisTask = Task { [weak self] in
             while !Task.isCancelled {
-                try? await Task.sleep(for: .milliseconds(900))
+                do {
+                    try await Task.sleep(for: .milliseconds(900))
+                } catch {
+                    break
+                }
+                guard !Task.isCancelled else { break }
                 await self?.analyzeLatestWindow()
             }
         }
     }
 
-    private func analyzeLatestWindow() {
+    private func analyzeLatestWindow() async {
         guard isListening else { return }
-        inputLevel = capture.inputLevel
+        let level = capture.inputLevel
         let samples = capture.recentSamples(maxSeconds: 12)
-        let prepared = BPMAnalyzer.prepareSamples(samples, sourceRate: capture.sampleRate)
-        let normalized = AudioLevelNormalizer.normalize(prepared)
-        let analysisRate = BPMAnalyzer.effectiveSampleRate(sourceRate: capture.sampleRate)
-        let raw = BPMAnalyzer.estimate(samples: normalized, sampleRate: analysisRate)
+        let sampleRate = capture.sampleRate
+        let raw = await Task.detached(priority: .userInitiated) {
+            let prepared = BPMAnalyzer.prepareSamples(samples, sourceRate: sampleRate)
+            let normalized = AudioLevelNormalizer.normalize(prepared)
+            let analysisRate = BPMAnalyzer.effectiveSampleRate(sourceRate: sampleRate)
+            return BPMAnalyzer.estimate(samples: normalized, sampleRate: analysisRate)
+        }.value
+        guard !Task.isCancelled, isListening else { return }
+        inputLevel = level
         estimate = smooth(raw)
         adoptCurrentEstimate()
     }
@@ -350,6 +408,7 @@ final class DetectorViewModel {
         listenSource = source
         listenStartedAt = Date()
         isListening = true
+        beatFeedback.prepare()
         startPulseLoop()
         logger.info(
             .detector,
@@ -357,6 +416,17 @@ final class DetectorViewModel {
             message: "Started listening.",
             metadata: ["source": source]
         )
+    }
+
+    private func recordScan(bpm: Int, confidence: Double, loggedAt: Date) {
+        scans.insert(
+            ScanRecord(id: UUID(), bpm: bpm, confidence: confidence, loggedAt: loggedAt),
+            at: 0
+        )
+        if scans.count > ScanRecord.storedLimit {
+            scans.removeLast(scans.count - ScanRecord.storedLimit)
+        }
+        scanHistory.save(scans)
     }
 
     private func clearBeatSync() {
@@ -373,22 +443,23 @@ final class DetectorViewModel {
     }
 
     private func refreshFeltBeat(now: Date = Date()) {
-        let previous = feltBeat
         guard let bpm = displayedBPM else {
             feltBeat = nil
             scheduledTick = nil
             return
         }
         if let beatSync {
-            feltBeat = FeltBeat(bpm: beatSync.bpm, anchor: beatSync.phaseAnchor)
-        } else if let feltBeat, abs(feltBeat.bpm - bpm) <= 4 {
-            self.feltBeat = FeltBeat(bpm: bpm, anchor: feltBeat.anchor)
-        } else {
-            feltBeat = FeltBeat(bpm: bpm, anchor: now)
-        }
-        if feltBeat != previous {
+            let next = FeltBeat(bpm: beatSync.bpm, anchor: beatSync.phaseAnchor)
+            guard next != feltBeat else { return }
+            feltBeat = next
             scheduledTick = nil
+            return
         }
+        if let feltBeat, abs(feltBeat.bpm - bpm) <= 4 {
+            return
+        }
+        feltBeat = FeltBeat(bpm: bpm, anchor: now)
+        scheduledTick = nil
     }
 
     func advancePulse(to now: Date) {
@@ -399,6 +470,7 @@ final class DetectorViewModel {
         }
         guard let due = scheduledTick, now >= due else { return }
         beatTick &+= 1
+        beatFeedback.impactOccurred(intensity: 0.6)
         let period = 60.0 / Double(beat.bpm)
         var next = due.addingTimeInterval(period)
         if now >= next {
@@ -464,6 +536,20 @@ final class DetectorViewModel {
             message: "Microphone permission updated.",
             metadata: ["status": permissionToken(state)]
         )
+    }
+
+    private func captureFailureMessage(for error: Error) -> String {
+        let busyCodes: Set<Int> = [
+            AVAudioSession.ErrorCode.insufficientPriority.rawValue,
+            AVAudioSession.ErrorCode.isBusy.rawValue,
+            AVAudioSession.ErrorCode.cannotInterruptOthers.rawValue,
+            AVAudioSession.ErrorCode.cannotStartRecording.rawValue,
+            AVAudioSession.ErrorCode.siriIsRecording.rawValue
+        ]
+        if error is LiveCaptureError || busyCodes.contains((error as NSError).code) {
+            return DetectorStatusCopy.micBusy
+        }
+        return DetectorStatusCopy.captureFailed
     }
 
     private func permissionToken(_ state: MicPermissionState) -> String {
@@ -567,6 +653,10 @@ extension DetectorViewModel {
 
     func enableListeningForTesting() {
         isListening = true
+    }
+
+    func setChangingListenForTesting(_ changing: Bool) {
+        isChangingListen = changing
     }
 }
 #endif

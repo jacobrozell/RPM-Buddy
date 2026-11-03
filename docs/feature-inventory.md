@@ -13,7 +13,7 @@
 | Mic permission onboarding | ✅ v1 | [AppShellSpec](../specs/AppShellSpec.md) |
 | Settings + legal links | ✅ v1 | [AppShellSpec](../specs/AppShellSpec.md) |
 | GA4 / Firebase Analytics + logging | ✅ v1 | [LoggingAnalyticsSpec](../specs/LoggingAnalyticsSpec.md) |
-| Session history | ⛔ planned | FutureIdeas |
+| Previous scans | ✅ v1 | Last eight readings, stored on the phone |
 | Tap the beat | ✅ v1 | Snaps the count to your taps and flashes on that beat |
 | Too slow / Too fast | ✅ v1 | Locks the next count in the same pulse family; haptic tick while listening |
 

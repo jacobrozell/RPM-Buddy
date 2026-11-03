@@ -14,6 +14,7 @@ struct AccessibilityIdentifierTests {
         #expect(A11yID.countTooFast == "detector.count.tooFast")
         #expect(A11yID.settingsButton == "detector.settings.button")
         #expect(A11yID.loggedTimestamp == "detector.logged.timestamp")
+        #expect(A11yID.scanHistory == "detector.scans")
         #expect(A11yID.tempoAlternatives == "detector.tempo.alternatives")
     }
 }

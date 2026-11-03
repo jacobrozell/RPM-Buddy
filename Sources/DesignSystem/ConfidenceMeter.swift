@@ -16,36 +16,33 @@ struct ConfidenceMeter: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text(String(localized: "confidence.title", defaultValue: "Analysis confidence"))
-                    .font(.subheadline.weight(.semibold))
-                Spacer()
-                if showsValue {
-                    Text("\(Int((confidence * 100).rounded()))%")
-                        .font(.subheadline.monospacedDigit())
-                        .foregroundStyle(.secondary)
-                }
-            }
+        HStack(spacing: 12) {
+            Text(String(localized: "confidence.title", defaultValue: "Confidence"))
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .frame(width: 96, alignment: .leading)
             Gauge(value: confidence, in: 0...1) {
                 EmptyView()
-            } currentValueLabel: {
-                Text(label)
-                    .font(.caption)
             }
             .gaugeStyle(.accessoryLinearCapacity)
-            .tint(confidenceTint)
-            Text(String(
-                localized: "confidence.caption",
-                defaultValue: "Higher confidence means the beat pattern was clearer."
-            ))
-                .font(.caption)
+            .tint(showsValue ? confidenceTint : .secondary)
+            Text(valueText)
+                .font(.subheadline.monospacedDigit())
                 .foregroundStyle(.secondary)
+                .frame(width: 48, alignment: .trailing)
         }
+        .frame(height: 32)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(label)
-        .accessibilityValue("\(Int((confidence * 100).rounded())) percent")
+        .accessibilityLabel(showsValue ? label : String(localized: "confidence.fromTaps", defaultValue: "Taps"))
+        .accessibilityValue(showsValue ? "\(Int((confidence * 100).rounded())) percent" : "")
         .accessibilityIdentifier(A11yID.confidenceMeter)
+    }
+
+    private var valueText: String {
+        if showsValue {
+            return "\(Int((confidence * 100).rounded()))%"
+        }
+        return String(localized: "confidence.fromTaps", defaultValue: "Taps")
     }
 
     private var confidenceTint: Color {

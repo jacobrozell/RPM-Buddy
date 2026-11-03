@@ -30,33 +30,25 @@ struct MetronomeFixture: Identifiable, Sendable, Equatable {
 }
 
 enum MetronomeFixtureCatalog {
-    static let generated: [MetronomeFixture] = [
-        MetronomeFixture(
-            id: "metronome-90bpm-30s",
-            filename: "metronome-90bpm-30s.wav",
-            expectedBPM: 90,
-            license: "Project-generated (CC0-equivalent)"
-        ),
-        MetronomeFixture(
-            id: "metronome-120bpm-30s",
-            filename: "metronome-120bpm-30s.wav",
-            expectedBPM: 120,
-            license: "Project-generated (CC0-equivalent)"
-        ),
-        MetronomeFixture(
-            id: "metronome-128bpm-30s",
-            filename: "metronome-128bpm-30s.wav",
-            expectedBPM: 128,
-            license: "Project-generated (CC0-equivalent)"
-        ),
-        MetronomeFixture(
-            id: "metronome-bigsoundbank-120bpm-12s",
-            filename: "metronome-bigsoundbank-120bpm-12s.wav",
-            expectedBPM: 120,
-            toleranceBPM: 10,
-            license: "CC0 — BigSoundBank #0468"
-        ),
-    ]
+    private static let generatedBPMs = [50, 60, 80, 90, 100, 120, 128, 140, 145, 160]
+
+    static let generated: [MetronomeFixture] =
+        generatedBPMs.map { bpm in
+            MetronomeFixture(
+                id: "metronome-\(bpm)bpm-30s",
+                filename: "metronome-\(bpm)bpm-30s.wav",
+                expectedBPM: bpm,
+                license: "Project-generated (CC0-equivalent)"
+            )
+        } + [
+            MetronomeFixture(
+                id: "metronome-bigsoundbank-120bpm-12s",
+                filename: "metronome-bigsoundbank-120bpm-12s.wav",
+                expectedBPM: 120,
+                toleranceBPM: 10,
+                license: "CC0 — BigSoundBank #0468"
+            ),
+        ]
 
     static let primaryVerification = MetronomeFixture(
         id: "metronome-120bpm-30s",
@@ -66,7 +58,7 @@ enum MetronomeFixtureCatalog {
     )
 }
 
-struct MetronomeSelfTestResult: Equatable {
+struct MetronomeSelfTestResult: Equatable, Sendable {
     let fixture: MetronomeFixture
     let estimate: BPMEstimate
     let passed: Bool

@@ -4,9 +4,11 @@ struct InputLevelMeter: View {
     let level: Float
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(String(localized: "input.title", defaultValue: "Input level"))
-                .font(.subheadline.weight(.semibold))
+        HStack(spacing: 12) {
+            Text(String(localized: "input.title", defaultValue: "Mic"))
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .frame(width: 96, alignment: .leading)
             GeometryReader { proxy in
                 ZStack(alignment: .leading) {
                     Capsule()
@@ -17,10 +19,11 @@ struct InputLevelMeter: View {
                 }
             }
             .frame(height: 10)
-            .accessibilityIdentifier(A11yID.inputLevel)
         }
+        .frame(height: 32)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(String(localized: "input.a11y", defaultValue: "Microphone input level"))
         .accessibilityValue("\(Int((level * 100).rounded())) percent")
+        .accessibilityIdentifier(A11yID.inputLevel)
     }
 }

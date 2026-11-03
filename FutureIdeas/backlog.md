@@ -19,7 +19,6 @@ After RPM Buddy TestFlight validates the detector on real devices, extract the a
 
 ## Product (RPM Buddy app)
 
-- Session history (last N readings with timestamp)
 - Spectral-flux onset for bass-heavy / hip-hop mic pickup (see `docs/brainstorm-sensitivity.md`)
 - Settings sensitivity toggle (Normal / Boost max gain)
 - Haptic pulse at detected BPM

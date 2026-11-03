@@ -9,10 +9,10 @@
    - **Tempo alternatives** — half-time, primary, double-time (and quarter-time when in range) for the same pulse
    - **Confidence meter** — 0–100% linear gauge with short caption
    - **Input level** — bar reflecting mic energy (confirms the mic is working)
-3. User taps **Stop** → capture stops; last logged reading, timestamp, and alternatives remain on screen.
+3. User taps **Stop** → capture stops, and the pulse stops with it. The last logged reading, timestamp, and alternatives remain on screen. The last eight scans stay on this phone.
 4. Status footnote updates for idle, listening, quiet signal, and estimating states.
 5. **Tap the beat** — tap in time with the music. After three taps, the displayed count snaps to the microphone tempo's quarter, half, primary, or double that matches those taps, and the BPM card flashes on that beat. The last tap is the downbeat. If the mic has no tempo, the count comes from the taps alone. Starting Listen clears the sync.
-6. **Too slow / Too fast** — once a tempo is showing, these lock the next faster or slower count in that same family (160 → 80 → 40, and back). The mic cannot pull the count back. Tap the beat while locked only moves the downbeat. Listen clears the lock. A count that came from taps stays a tap count, so the mic confidence meter stays hidden. While listening, the phone ticks a light haptic on each beat. The speaker stays silent so the click cannot leak into the mic.
+6. **Too slow / Too fast** — once a tempo is showing, these lock the next faster or slower count in that same family (160 → 80 → 40, and back). The mic cannot pull the count back. Tap the beat while locked only moves the downbeat. Listen clears the lock. A count that came from taps stays a tap count, so the mic confidence meter stays hidden. While listening, the phone ticks a light haptic on each beat and the BPM card flashes on that beat. Stop ends both. The speaker stays silent so the click cannot leak into the mic.
 
 ## Confidence semantics
 
@@ -27,7 +27,7 @@ Follows librosa's `beat.tempo` (ISC): log-compressed mel spectral flux, 8 s auto
 
 ## Analysis limits
 
-- Plausible BPM range: 70–180 (octave folding applied).
+- Plausible BPM range: 40–180 (octave folding applied).
 - Not marketed as studio-grade; settings disclaimer required.
 
 ## Accessibility
@@ -41,5 +41,5 @@ Follows librosa's `beat.tempo` (ISC): log-compressed mel spectral flux, 8 s auto
 |-------|-------|
 | Target release | 1.0 |
 | Last verified | 2026-06-21 |
-| Tests | `Tests/BPMAnalyzerTests.swift`, `Tests/TapBeatSyncTests.swift`, `RPMBuddyUITests/SmokeUITests.swift` |
+| Tests | `Tests/BPMAnalyzerTests.swift`, `Tests/MetronomeFixtureTests.swift`, `Tests/TapBeatSyncTests.swift`, `RPMBuddyUITests/SmokeUITests.swift` |
 | Primary paths | `Sources/Features/Detector/*`, `Sources/Domain/BPMAnalyzer.swift` |

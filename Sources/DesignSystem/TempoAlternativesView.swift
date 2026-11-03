@@ -5,17 +5,8 @@ struct TempoAlternativesView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(String(localized: "tempo.alternatives.title", defaultValue: "Same pulse, different counts"))
+            Text(String(localized: "tempo.alternatives.title", defaultValue: "Same pulse"))
                 .font(.subheadline.weight(.semibold))
-            Text(String(
-                localized: "tempo.alternatives.caption",
-                defaultValue: """
-                Same pulse, counted slower or faster. Too slow and Too fast lock one of these in.
-                """
-            ))
-            .font(.caption)
-            .foregroundStyle(.secondary)
-
             FlowLayout(spacing: 8) {
                 ForEach(alternatives) { alternative in
                     alternativeChip(alternative)
@@ -56,6 +47,10 @@ private struct FlowLayout: Layout {
 
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
         let width = proposal.width ?? 0
+        if width < 1 {
+            let height = subviews.map { $0.sizeThatFits(.unspecified).height }.max() ?? 0
+            return CGSize(width: 0, height: height)
+        }
         var x: CGFloat = 0
         var y: CGFloat = 0
         var rowHeight: CGFloat = 0

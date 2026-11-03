@@ -26,17 +26,18 @@ from pathlib import Path
 fixtures_dir = Path("Resources/Fixtures")
 manifest_path = fixtures_dir / "manifest.json"
 manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-manifest["fixtures"].append(
-    {
-        "filename": "metronome-bigsoundbank-120bpm-12s.wav",
-        "expectedBPM": 120,
-        "durationSeconds": 12,
-        "sampleRateHz": 48000,
-        "source": "BigSoundBank sound #0468 (Joseph SARDIN)",
-        "license": "CC0 — https://bigsoundbank.com/metronome-a-120bpm-s0468.html",
-        "notes": "Recorded mechanical metronome; approximate tempo.",
-    }
-)
+entry = {
+    "filename": "metronome-bigsoundbank-120bpm-12s.wav",
+    "expectedBPM": 120,
+    "durationSeconds": 12,
+    "sampleRateHz": 48000,
+    "source": "BigSoundBank sound #0468 (Joseph SARDIN)",
+    "license": "CC0 — https://bigsoundbank.com/metronome-a-120bpm-s0468.html",
+    "notes": "Recorded mechanical metronome; approximate tempo.",
+}
+fixtures = [item for item in manifest["fixtures"] if item.get("filename") != entry["filename"]]
+fixtures.append(entry)
+manifest["fixtures"] = fixtures
 manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
 print("Updated manifest.json with BigSoundBank entry")
 PY

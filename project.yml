@@ -89,6 +89,7 @@ targets:
         INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
         SWIFT_EMIT_LOC_STRINGS: YES
         ENABLE_USER_SCRIPT_SANDBOXING: NO
+        SWIFT_OBJC_BRIDGING_HEADER: Sources/Data/RPMBuddy-Bridging-Header.h
 
   RPMBuddyTests:
     type: bundle.unit-test

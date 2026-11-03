@@ -16,7 +16,7 @@ CLICK_MS = 10
 CLICK_FREQ = 1_000.0
 CLICK_AMP = 0.9
 DURATION_SECONDS = 30
-BPMS = (90, 120, 128)
+BPMS = (50, 60, 80, 90, 100, 120, 128, 140, 145, 160)
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "Resources" / "Fixtures"
@@ -59,10 +59,12 @@ def write_manifest(fixtures: list[dict]) -> None:
 
 def main() -> None:
     entries: list[dict] = []
+    generated_names: set[str] = set()
     for bpm in BPMS:
         filename = f"metronome-{bpm}bpm-{DURATION_SECONDS}s.wav"
         path = OUT_DIR / filename
         write_metronome(path, bpm, DURATION_SECONDS)
+        generated_names.add(filename)
         entries.append(
             {
                 "filename": filename,
@@ -75,8 +77,16 @@ def main() -> None:
         )
         print(f"Wrote {path} ({path.stat().st_size // 1024} KB)")
 
+    manifest_path = OUT_DIR / "manifest.json"
+    if manifest_path.exists():
+        existing = json.loads(manifest_path.read_text(encoding="utf-8"))
+        for fixture in existing.get("fixtures", []):
+            filename = fixture.get("filename")
+            if filename and filename not in generated_names:
+                entries.append(fixture)
+
     write_manifest(entries)
-    print(f"Wrote {OUT_DIR / 'manifest.json'}")
+    print(f"Wrote {manifest_path}")
 
 
 if __name__ == "__main__":

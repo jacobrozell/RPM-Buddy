@@ -1,22 +1,35 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+
+    },
+    "%@\n " : {
+
+    },
+    "%@\n%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$lld"
+          }
+        }
+      }
+    },
+    "%lld" : {
+
+    },
     "%lld percent" : {
 
     },
-    "%lld%%" : {
-
-    },
-    "RPM Buddy" : {
-
-    },
-    "confidence.caption" : {
+    "confidence.fromTaps" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Higher confidence means the beat pattern was clearer."
+            "value" : "Taps"
           }
         }
       }
@@ -60,7 +73,73 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Analysis confidence"
+            "value" : "Confidence"
+          }
+        }
+      }
+    },
+    "detector.beat.counted" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Counted from your taps."
+          }
+        }
+      }
+    },
+    "detector.beat.countLocked" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Count locked to the pulse."
+          }
+        }
+      }
+    },
+    "detector.beat.keepTapping" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Keep tapping with the beat."
+          }
+        }
+      }
+    },
+    "detector.beat.synced" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Synced. The pulse follows your taps."
+          }
+        }
+      }
+    },
+    "detector.beat.tap" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Tap the beat"
+          }
+        }
+      }
+    },
+    "detector.beat.tap.hint" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Tap in time with the music. A few taps pick the count and line up the beat."
           }
         }
       }
@@ -87,13 +166,46 @@
         }
       }
     },
-    "detector.instructions" : {
+    "detector.count.caption" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Point your phone at a speaker or record. RPM Buddy estimates beats per minute from the mic."
+            "value" : "Too fast if the pulse rushes. Too slow if it drags."
+          }
+        }
+      }
+    },
+    "detector.count.hint" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Locks this count and retimes the pulse."
+          }
+        }
+      }
+    },
+    "detector.count.tooFast" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Too fast"
+          }
+        }
+      }
+    },
+    "detector.count.tooSlow" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Too slow"
           }
         }
       }
@@ -109,13 +221,35 @@
         }
       }
     },
-    "detector.logged.title" : {
+    "detector.listen.starting" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Logged reading"
+            "value" : "Starting…"
+          }
+        }
+      }
+    },
+    "detector.listen.stopping" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Stopping…"
+          }
+        }
+      }
+    },
+    "detector.scans.title" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Previous scans"
           }
         }
       }
@@ -127,6 +261,17 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Could not start the microphone."
+          }
+        }
+      }
+    },
+    "detector.status.countLocked" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Count locked."
           }
         }
       }
@@ -164,6 +309,17 @@
         }
       }
     },
+    "detector.status.micBusy" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The microphone is busy. Stop screen recording, then try Listen again."
+          }
+        }
+      }
+    },
     "detector.status.needMic" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
@@ -186,6 +342,39 @@
         }
       }
     },
+    "detector.status.starting" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Starting the microphone…"
+          }
+        }
+      }
+    },
+    "detector.status.stopped" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Stopped. The last reading stays on screen."
+          }
+        }
+      }
+    },
+    "detector.status.synced" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Beat synced to your taps."
+          }
+        }
+      }
+    },
     "detector.stop" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
@@ -193,17 +382,6 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Stop"
-          }
-        }
-      }
-    },
-    "detector.subtitle" : {
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Tempo from the mic"
           }
         }
       }
@@ -225,7 +403,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Input level"
+            "value" : "Mic"
           }
         }
       }
@@ -273,6 +451,9 @@
           }
         }
       }
+    },
+    "RPM Buddy" : {
+
     },
     "settings.about" : {
       "extractionState" : "extracted_with_value",
@@ -417,24 +598,13 @@
         }
       }
     },
-    "tempo.alternatives.caption" : {
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Tempo detectors often lock to half- or double-time. Try the count that matches the music."
-          }
-        }
-      }
-    },
     "tempo.alternatives.title" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Same pulse, different counts"
+            "value" : "Same pulse"
           }
         }
       }

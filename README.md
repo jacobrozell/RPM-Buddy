@@ -11,6 +11,7 @@ Product specs live in [`specs/`](specs/README.md). Shipped vs planned features: 
 ## What it does
 
 - **Live BPM detection** — real-time tempo analysis from the mic with logged readings and timestamps
+- **Previous scans** — the last eight readings stay on this phone
 - **Half/double-time alternatives** — tap to switch when the detector locks to a related tempo
 - **Tap the beat** — tap along to pick the count and flash a pulse on your downbeat
 - **Too slow / Too fast** — lock the next count when the pulse feels rushed or dragged
@@ -20,7 +21,7 @@ Product specs live in [`specs/`](specs/README.md). Shipped vs planned features: 
 - **Metronome self-test** — bundled WAV fixtures + in-app verification (Settings → Run metronome verification)
 - **Settings** — legal links; no accounts or IAP
 
-**Planned (post-v1):** session history — see feature inventory.
+**Planned (post-v1):** see [`FutureIdeas/backlog.md`](FutureIdeas/backlog.md).
 
 ---
 

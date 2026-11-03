@@ -24,7 +24,7 @@ Prioritized polish from MVP review. Legend: **ship** = TestFlight/App Store gate
 |------|-----|
 | **Tap alternative to promote** | Shipped as Too slow / Too fast, which lock the next count in the family |
 | **Lock reading button** | Explicit save when user agrees; not only auto-log on stability |
-| **Session history (last 5–10)** | Timestamp + alternatives already exist; list is natural next step |
+| **Session history (last 5–10)** | Shipped as the last eight scans, BPM and time, stored on the phone |
 | **Tap tempo fallback** | Shipped: Tap the beat snaps the octave and flashes on the downbeat |
 | **Haptic pulse at BPM** | Shipped. The tick schedule is unit-tested; UI tests skip the live loop. |
 | **Clear listening states** | Distinct UI: waiting / hearing / analyzing / logged (not just footnote) |

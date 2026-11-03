@@ -36,6 +36,22 @@ struct BPMAnalyzerTests {
         }
     }
 
+    @Test(
+        "Detects metronome clicks across the search range",
+        arguments: [50, 60, 80, 100, 140, 145, 160]
+    )
+    func detectsMetronomeBPM(_ expected: Int) {
+        let result = BPMAnalyzer.estimate(
+            samples: clickTrack(bpm: Double(expected), seconds: 20),
+            sampleRate: sampleRate
+        )
+        #expect(result.bpm != nil, "Expected \(expected) BPM")
+        if let bpm = result.bpm {
+            #expect(abs(bpm - expected) <= 3, "Expected ~\(expected), got \(bpm)")
+        }
+        #expect(result.confidence > 0.15)
+    }
+
     @Test("Silence yields no BPM")
     func silenceHasNoBPM() {
         let silence = [Float](repeating: 0, count: 20_000)

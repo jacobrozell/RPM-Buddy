@@ -10,7 +10,7 @@ bash Scripts/sync-metronome-fixtures.sh
 
 This:
 
-1. Generates **90 / 120 / 128 BPM** sine-click metronomes (30 s, mono 44.1 kHz) via `Scripts/generate_metronome_fixture.py` — project-authored, CC0-equivalent.
+1. Generates **50 / 60 / 80 / 90 / 100 / 120 / 128 / 140 / 145 / 160 BPM** sine-click metronomes (30 s, mono 44.1 kHz) via `Scripts/generate_metronome_fixture.py` — project-authored, CC0-equivalent.
 2. Downloads **BigSoundBank #0468** mechanical metronome (~120 BPM, 12 s, CC0).
 
 See `manifest.json` for expected BPM per file.

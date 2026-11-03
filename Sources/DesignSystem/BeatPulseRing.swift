@@ -21,7 +21,7 @@ struct BeatPulseRing: View {
     }
 
     private func ring(flash: Double) -> some View {
-        RoundedRectangle(cornerRadius: 20)
+            RoundedRectangle(cornerRadius: 28)
             .strokeBorder(Color.accentColor.opacity(0.25 + 0.75 * flash), lineWidth: 2 + 4 * flash)
             .padding(1)
     }

@@ -88,16 +88,26 @@ struct SettingsView: View {
 
     private func runSelfTests() {
         isRunningSelfTest = true
-        selfTestResults = MetronomeFixtureCatalog.generated.map { MetronomeSelfTest.run(fixture: $0) }
-        isRunningSelfTest = false
-        let failedCount = selfTestResults.filter { !$0.passed }.count
+        let fixtures = MetronomeFixtureCatalog.generated
+        Task {
+            let results = await Task.detached(priority: .userInitiated) {
+                fixtures.map { MetronomeSelfTest.run(fixture: $0) }
+            }.value
+            selfTestResults = results
+            isRunningSelfTest = false
+            logSelfTest(results)
+        }
+    }
+
+    private func logSelfTest(_ results: [MetronomeSelfTestResult]) {
+        let failedCount = results.filter { !$0.passed }.count
         AppLogging.logger.info(
             .settings,
             eventName: "metronome_self_test_completed",
             message: "Metronome self-test finished.",
             metadata: [
                 "status": failedCount == 0 ? "passed" : "failed",
-                "passedCount": String(selfTestResults.count - failedCount),
+                "passedCount": String(results.count - failedCount),
                 "failedCount": String(failedCount)
             ]
         )

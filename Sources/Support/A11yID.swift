@@ -10,6 +10,7 @@ enum A11yID {
     static let settingsButton = "detector.settings.button"
     static let micPermissionButton = "onboarding.mic.allow"
     static let loggedTimestamp = "detector.logged.timestamp"
+    static let scanHistory = "detector.scans"
     static let tempoAlternatives = "detector.tempo.alternatives"
     static let tempoAlternativePrefix = "detector.tempo.alternative"
     static let metronomeSelfTest = "settings.verify.metronome"

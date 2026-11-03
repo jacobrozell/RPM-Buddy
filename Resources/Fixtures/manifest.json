@@ -2,8 +2,40 @@
   "description": "RPMBuddy metronome fixtures for analyzer verification",
   "fixtures": [
     {
+      "filename": "metronome-50bpm-30s.wav",
+      "expectedBPM": 50,
+      "durationSeconds": 30,
+      "sampleRateHz": 44100,
+      "source": "Scripts/generate_metronome_fixture.py",
+      "license": "Project-generated metronome clicks (CC0-equivalent)"
+    },
+    {
+      "filename": "metronome-60bpm-30s.wav",
+      "expectedBPM": 60,
+      "durationSeconds": 30,
+      "sampleRateHz": 44100,
+      "source": "Scripts/generate_metronome_fixture.py",
+      "license": "Project-generated metronome clicks (CC0-equivalent)"
+    },
+    {
+      "filename": "metronome-80bpm-30s.wav",
+      "expectedBPM": 80,
+      "durationSeconds": 30,
+      "sampleRateHz": 44100,
+      "source": "Scripts/generate_metronome_fixture.py",
+      "license": "Project-generated metronome clicks (CC0-equivalent)"
+    },
+    {
       "filename": "metronome-90bpm-30s.wav",
       "expectedBPM": 90,
+      "durationSeconds": 30,
+      "sampleRateHz": 44100,
+      "source": "Scripts/generate_metronome_fixture.py",
+      "license": "Project-generated metronome clicks (CC0-equivalent)"
+    },
+    {
+      "filename": "metronome-100bpm-30s.wav",
+      "expectedBPM": 100,
       "durationSeconds": 30,
       "sampleRateHz": 44100,
       "source": "Scripts/generate_metronome_fixture.py",
@@ -20,6 +52,30 @@
     {
       "filename": "metronome-128bpm-30s.wav",
       "expectedBPM": 128,
+      "durationSeconds": 30,
+      "sampleRateHz": 44100,
+      "source": "Scripts/generate_metronome_fixture.py",
+      "license": "Project-generated metronome clicks (CC0-equivalent)"
+    },
+    {
+      "filename": "metronome-140bpm-30s.wav",
+      "expectedBPM": 140,
+      "durationSeconds": 30,
+      "sampleRateHz": 44100,
+      "source": "Scripts/generate_metronome_fixture.py",
+      "license": "Project-generated metronome clicks (CC0-equivalent)"
+    },
+    {
+      "filename": "metronome-145bpm-30s.wav",
+      "expectedBPM": 145,
+      "durationSeconds": 30,
+      "sampleRateHz": 44100,
+      "source": "Scripts/generate_metronome_fixture.py",
+      "license": "Project-generated metronome clicks (CC0-equivalent)"
+    },
+    {
+      "filename": "metronome-160bpm-30s.wav",
+      "expectedBPM": 160,
       "durationSeconds": 30,
       "sampleRateHz": 44100,
       "source": "Scripts/generate_metronome_fixture.py",

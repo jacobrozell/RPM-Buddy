@@ -280,6 +280,47 @@ struct DetectorTapSyncTests {
         #expect(model.beatTick == 2)
     }
 
+    @Test("Stop ends the pulse and keeps the scan")
+    @MainActor
+    func stopEndsPulseAndKeepsScan() async {
+        let model = DetectorViewModel(scanHistory: MemoryScanHistoryStore())
+        let start = Date(timeIntervalSince1970: 19_000)
+        model.logReadingForTesting(primaryBPM: 100, confidence: 0.6, loggedAt: start)
+        model.stepCount(faster: false, at: start)
+        model.enableListeningForTesting()
+        #expect(model.showsPulse)
+
+        model.advancePulse(to: start.addingTimeInterval(1.2))
+        let ticks = model.beatTick
+        await model.stopListening()
+
+        #expect(!model.isListening)
+        #expect(!model.showsPulse)
+        model.advancePulse(to: start.addingTimeInterval(4))
+        #expect(model.beatTick == ticks)
+        #expect(model.scans.count == 1)
+        #expect(model.scans[0].bpm == model.displayedBPM)
+        await model.stopListening()
+        #expect(model.scans.count == 1)
+    }
+
+    @Test("A second listen tap does nothing while the mic is changing")
+    @MainActor
+    func ignoresToggleWhileListenIsChanging() async {
+        let model = DetectorViewModel(scanHistory: MemoryScanHistoryStore())
+        let start = Date(timeIntervalSince1970: 21_000)
+        model.logReadingForTesting(primaryBPM: 90, confidence: 0.4, loggedAt: start)
+        model.enableListeningForTesting()
+        model.setChangingListenForTesting(true)
+
+        await model.toggleListening()
+        await model.startListening()
+
+        #expect(model.isListening)
+        #expect(model.loggedReading?.primaryBPM == 90)
+        #expect(model.scans.isEmpty)
+    }
+
     @Test("The pulse does not tick while listening is off")
     @MainActor
     func pulseStaysQuietUntilListening() {

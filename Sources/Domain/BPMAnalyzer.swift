@@ -16,7 +16,7 @@ struct BPMEstimate: Sendable, Equatable {
 enum BPMAnalyzer {
     static let analysisSampleRate = 11_025.0
 
-    private static let minBPM = 70.0
+    private static let minBPM = 40.0
     private static let maxBPM = 180.0
     private static let fftSize = 1024
     private static let hopSize = 128
